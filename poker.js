@@ -1,5 +1,5 @@
-
-const SUITES = ['Spade', 'Heart', 'Diamond', 'Club'];
+// Use 'English alphabetical order' to rank suite (see https://en.wikipedia.org/wiki/High_card_by_suit)
+const SUITES = ['Spade', 'Heart', 'Diamond', 'Club']; 
 const NAMES = ['Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Jack', 'Queen', 'King', 'Ace'];
 
 class Card {
@@ -41,12 +41,18 @@ class Deck {
         return this.deck.length;
     }
 
-    addCards(...cards) {
+    addCards(cards) {
         cards.forEach((card) => this.deck.push(card));
     }
 
-    getCard() {
-        return (this.deck.length > 0)? this.deck.pop() : null;
+    removeCard() {
+        if(this.deck.length <= 0) {
+            console.error("Deck is empty");
+            return null;
+        } 
+        else {
+            return this.deck.pop();
+        }
     }
 
     print() {
@@ -68,10 +74,8 @@ class Dealer {
     }
 
     deal(cards, ...players) {
-        const noPlayers = players.length;
-        const dealCards = Math.min(cards, this.deck.length());
-        for(let i=0; i<dealCards; i++) {
-            players[i%noPlayers].addCard(this.deck.getCard());
+        for(let i=0; i<cards; i++) {
+            players.forEach((player) => player.addCard(this.deck.removeCard()));
         }
     }
 
@@ -91,8 +95,14 @@ class Player {
         this.cards.push(card);
     }
 
-    removeCard() {
-        return (this.cards.length > 0)? this.cards.pop() : null;
+    removeCards(cnt) {
+        if(this.cards.length < cnt) {
+            console.error("Not enough cards");
+            return null;
+        } 
+        else {
+            return this.cards.splice(0, cnt);
+        }
     }
 
     getCards() {
@@ -127,7 +137,9 @@ class Validate {
         const diffValue = b.value - a.value;
         // Sort by suit if value is same
         if(diffValue === 0){
-            return b.suit < a.suit;
+            const suitA = a.suit.toUpperCase(); // ignore upper and lowercase
+            const suitB = b.suit.toUpperCase(); // ignore upper and lowercase
+            return (suitB < suitA)? -1: 1;
         }
         else {
             return diffValue;
@@ -136,11 +148,22 @@ class Validate {
 
     printPlayerStats() {
         this.playerStats.forEach((playerStats) => {
-            console.log('Name :', playerStats.Name);
-            console.log('Hand :', playerStats.Hand);
-            console.log('Total Value :', playerStats.Total);
+            console.log('Name : ', playerStats.Name);
+            console.log('Hand : ', playerStats.Hand);
+            console.log('Total Value : ', playerStats.Total);
             console.log('');
         })
+    }
+
+    printWinner() {
+        const playerStats = [...this.playerStats];
+        if(playerStats.length < 1) {
+            console.error('Player stats is missing!');
+            return;
+        }
+
+        const winner = playerStats.reduce((acc, player) => (player.Total > acc.Total) ? player: acc, playerStats[0]);
+        console.log('Winner is : ', winner.Name);
     }
 }
 
@@ -149,11 +172,11 @@ class Pile {
         this.pile = [];
     }
 
-    addCard(card) {
-        this.pile.push(card);
+    addCards(cards) {
+        cards.forEach((card) => this.pile.push(card));
     }
 
-    getPile() {
+    removePile() {
         return this.pile.splice(0, this.pile.length);
     }
 
@@ -163,18 +186,43 @@ class Pile {
     }
 }
 
+class Game {
+    constructor() {
+        this.dealer = new Dealer();
+        this.players = [];
+    }
 
-function deal(deck, cards, ...players) {
-    const noPlayers = players.length;
-    const dealCards = Math.min(cards, deck.length());
-    for(let i=0; i<dealCards; i++) {
-        players[i%noPlayers].addCard(deck.getCard());
+    addPlayers() {
+        let playerCnt = 0;
+
+        while(playerCnt < 2) {
+            playerCnt = prompt("Please enter the number of players (minimum 2)?");
+        }
+
+        for(let i=0; i<playerCnt; i++) {
+            const playerName = prompt(`Please enter Player ${i} name?`);
+            const player = new Player(playerName);
+            this.players.push(player);
+        }
+    }
+
+    startGame() {
+        if(this.players.length < 2) {
+            console.error('You need to add players first!');
+            return;
+        }
+
+        this.dealer.deal(5, ...this.players);
+        this.validate = new Validate(this.players);
+        this.validate.printPlayerStats();
+        this.validate.printWinner();
+
     }
 }
 
-function throwCards(pile, player, cnt) {
-    for(let i=0; i<cnt; i++) {
-        pile.addCard(player.removeCard());
+function deal(deck, cards, ...players) {
+    for(let i=0; i<cards; i++) {
+        players.forEach((player) => player.addCard(deck.removeCard()));
     }
 }
 
@@ -193,7 +241,7 @@ console.log('***DEL 2***:')
 console.log('')
 const slim = new Player('Slim');
 const luke = new Player('Luke');
-deal(deck, 10, slim, luke);
+deal(deck, 5, slim, luke);
 
 deck.print();
 slim.print();
@@ -207,9 +255,9 @@ console.log('')
 console.log('***DEL 3***:')
 console.log('')
 const pile = new Pile();
-throwCards(pile, slim, 2);
-throwCards(pile, luke, 2);
-deal(deck, 4, slim, luke);
+pile.addCards(slim.removeCards(2));
+pile.addCards(luke.removeCards(2));
+deal(deck, 2, slim, luke);
 
 deck.print();
 slim.print();
@@ -221,11 +269,11 @@ luke.printTotal();
 console.log('')
 console.log('***DEL 4***:')
 console.log('')
-throwCards(pile, slim, 5);
-throwCards(pile, luke, 5);
+pile.addCards(slim.removeCards(5));
+pile.addCards(luke.removeCards(5));
 slim.printTotal();
 luke.printTotal();
-deck.addCards(...pile.getPile());
+deck.addCards(pile.removePile());
 deck.shuffle();
 deck.print();
 deck.printTotal();
@@ -237,7 +285,7 @@ console.log('')
 
 const dealer = new Dealer();
 
-dealer.deal(10, slim, luke);
+dealer.deal(5, slim, luke);
 slim.print();
 slim.printTotal();
 luke.print();
@@ -251,3 +299,12 @@ console.log('')
 
 const validate = new Validate([slim, luke]);
 validate.printPlayerStats();
+
+//Del 7
+console.log('')
+console.log('***DEL 7***:')
+console.log('')
+
+const game = new Game();
+game.addPlayers();
+game.startGame();
