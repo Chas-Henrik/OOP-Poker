@@ -1,22 +1,20 @@
 
-const COLORS = ['Heart', 'Spade', 'Diamond', 'Club'];
+const SUITES = ['Spade', 'Heart', 'Diamond', 'Club'];
 const NAMES = ['Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Jack', 'Queen', 'King', 'Ace'];
 
 class Card {
-    constructor(color, name, value) {
-        this.color = color;
+    constructor(suit, name, value) {
+        this.suit = suit;
         this.name = name;
         this.value = value;
     }
 
     clone() {
-        return new Card(this.color, this.name, this.value);
+        return new Card(this.suit, this.name, this.value);
     }
 
     print() {
-        console.log('Color : ', this.color);
-        console.log('Name  : ', this.name);
-        console.log('Value : ', this.value);
+        process.stdout.write(`${this.suit} ${this.name} ${this.value}, `)
         console.log('');
     }
 }
@@ -26,7 +24,7 @@ class Deck {
         this.deck = [];
         for(let i=0; i<4; i++) {
             for(let j=2; j<15; j++) {
-                const card = new Card(COLORS[i%2], NAMES[j-2], j);
+                const card = new Card(SUITES[i], NAMES[j-2], j);
                 this.deck.push(card);
             }
         }
@@ -43,13 +41,40 @@ class Deck {
         return this.deck.length;
     }
 
+    addCards(...cards) {
+        cards.forEach((card) => this.deck.push(card));
+    }
+
     getCard() {
-        return (this.deck.length > 0)? this.deck.splice(0,1)[0] : null;
+        return (this.deck.length > 0)? this.deck.pop() : null;
     }
 
     print() {
-        this.deck.forEach((card) => card.print());
+        console.log('Deck:')
+        console.log(this.deck);
     }
+
+    printTotal() {
+        const tot = this.deck.reduce((acc, card) => acc + 1, 0)
+        console.log(`***Deck's total***:`);
+        console.log(tot);
+    }
+}
+
+class Dealer {
+    constructor() {
+        this.deck = new Deck();
+        this.deck.shuffle();
+    }
+
+    deal(cards, ...players) {
+        const noPlayers = players.length;
+        const dealCards = Math.min(cards, this.deck.length());
+        for(let i=0; i<dealCards; i++) {
+            players[i%noPlayers].addCard(this.deck.getCard());
+        }
+    }
+
 }
 
 class Player {
@@ -58,20 +83,83 @@ class Player {
         this.cards = [];
     }
 
+    getName() {
+        return this.name;
+    }
+
     addCard(card) {
         this.cards.push(card);
+    }
+
+    removeCard() {
+        return (this.cards.length > 0)? this.cards.pop() : null;
+    }
+
+    getCards() {
+        return [...this.cards];
     }
 
     print() {
         console.log('');
         console.log(`***${this.name}'s cards***:`)
-        this.cards.forEach((card) => card.print());
+        console.log(this.cards);
     }
 
     printTotal() {
         const tot = this.cards.reduce((acc, card) => acc + card.value, 0)
         console.log(`***${this.name}'s total***:`);
         console.log(tot);
+    }
+}
+
+class Validate {
+    constructor(players) {
+        this.playerStats = [];
+        players.forEach((player) => {
+            const playerCards = player.getCards();
+            const playerCardsSorted = playerCards.sort((a,b) => this.sortCards(a,b));
+            const playerTotal =  playerCardsSorted.reduce((acc, card) => acc + card.value, 0);
+            this.playerStats.push({Name: player.getName(), Hand: playerCardsSorted, Total: playerTotal})
+        });
+    }
+
+    sortCards(a,b) {
+        const diffValue = b.value - a.value;
+        // Sort by suit if value is same
+        if(diffValue === 0){
+            return b.suit < a.suit;
+        }
+        else {
+            return diffValue;
+        }
+    }
+
+    printPlayerStats() {
+        this.playerStats.forEach((playerStats) => {
+            console.log('Name :', playerStats.Name);
+            console.log('Hand :', playerStats.Hand);
+            console.log('Total Value :', playerStats.Total);
+            console.log('');
+        })
+    }
+}
+
+class Pile {
+    constructor() {
+        this.pile = [];
+    }
+
+    addCard(card) {
+        this.pile.push(card);
+    }
+
+    getPile() {
+        return this.pile.splice(0, this.pile.length);
+    }
+
+    print() {
+        console.log('Pile:')
+        console.log(this.pile);
     }
 }
 
@@ -84,13 +172,25 @@ function deal(deck, cards, ...players) {
     }
 }
 
+function throwCards(pile, player, cnt) {
+    for(let i=0; i<cnt; i++) {
+        pile.addCard(player.removeCard());
+    }
+}
+
+
 //Del 1
-console.log("Poker");
+console.log('')
+console.log('***DEL 1***:')
+console.log('')
 const deck = new Deck();
 deck.shuffle();
 deck.print();
 
 //Del 2
+console.log('')
+console.log('***DEL 2***:')
+console.log('')
 const slim = new Player('Slim');
 const luke = new Player('Luke');
 deal(deck, 10, slim, luke);
@@ -101,3 +201,53 @@ slim.printTotal();
 luke.print();
 luke.printTotal();
 
+
+//Del 3
+console.log('')
+console.log('***DEL 3***:')
+console.log('')
+const pile = new Pile();
+throwCards(pile, slim, 2);
+throwCards(pile, luke, 2);
+deal(deck, 4, slim, luke);
+
+deck.print();
+slim.print();
+slim.printTotal();
+luke.print();
+luke.printTotal();
+
+//Del 4
+console.log('')
+console.log('***DEL 4***:')
+console.log('')
+throwCards(pile, slim, 5);
+throwCards(pile, luke, 5);
+slim.printTotal();
+luke.printTotal();
+deck.addCards(...pile.getPile());
+deck.shuffle();
+deck.print();
+deck.printTotal();
+
+//Del 5
+console.log('')
+console.log('***DEL 5***:')
+console.log('')
+
+const dealer = new Dealer();
+
+dealer.deal(10, slim, luke);
+slim.print();
+slim.printTotal();
+luke.print();
+luke.printTotal();
+
+
+//Del 6
+console.log('')
+console.log('***DEL 6***:')
+console.log('')
+
+const validate = new Validate([slim, luke]);
+validate.printPlayerStats();
