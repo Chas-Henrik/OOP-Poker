@@ -6,17 +6,17 @@ const NAMES = ['Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 
 
 class Card {
     constructor(suit, name, value) {
-        this.suit = suit;
-        this.name = name;
-        this.value = value;
+        this.Suit = suit;
+        this.Name = name;
+        this.Value = value;
     }
 
     clone() {
-        return new Card(this.suit, this.name, this.value);
+        return new Card(this.Suit, this.Name, this.Value);
     }
 
     print() {
-        process.stdout.write(`${this.suit} ${this.name} ${this.value}, `)
+        process.stdout.write(`${this.Suit} ${this.Name} ${this.Value}, `)
         console.log('');
     }
 }
@@ -57,6 +57,16 @@ class Deck {
         }
     }
 
+    removeCards(cnt) {
+        if(this.deck.length < cnt) {
+            console.error("Not enough cards in deck");
+            return [];
+        }
+        else {
+            return this.deck.splice(0, cnt);
+        }
+    }
+
     print() {
         console.log('Deck:')
         console.log(this.deck);
@@ -80,46 +90,75 @@ class Dealer {
             players.forEach((player) => player.addCard(this.deck.removeCard()));
         }
     }
-
 }
 
 class Player {
     constructor(name) {
-        this.name = name;
-        this.cards = [];
+        this.Name = name;
+        this.Cards = [];
     }
 
     getName() {
-        return this.name;
+        return this.Name;
+    }
+
+    length() {
+        return this.Cards.length;
     }
 
     addCard(card) {
-        this.cards.push(card);
+        this.Cards.push(card);
+    }
+
+    addCards(cards) {
+        cards.forEach((card) => this.Cards.push(card));
+    }
+
+    removeCard(idx) {
+        if(idx < this.Cards.length) {
+            return this.Cards.splice(idx, 1);
+        }
+        else {
+            return [];
+        }
     }
 
     removeCards(cnt) {
-        if(this.cards.length < cnt) {
+        if(this.Cards.length < cnt) {
             console.error("Not enough cards");
-            return null;
+            return [];
         } 
         else {
-            return this.cards.splice(0, cnt);
+            return this.Cards.splice(0, cnt);
         }
     }
 
     getCards() {
-        return [...this.cards];
+        return [...this.Cards];
+    }
+
+    sortCards() {
+        const validate = new Validate([this]);
+        this.Cards = validate.sortCardsByValue(this.Cards)
     }
 
     print() {
         console.log('');
-        console.log(`***${this.name}'s cards***:`)
-        console.log(this.cards);
+        console.log(`***${this.Name}'s cards***:`)
+        console.log(this.Cards);
+    }
+
+    printIndex() {
+        console.log('');
+        console.log(`***${this.Name}'s cards***:`)
+        for(let i=0; i<this.Cards.length; i++) {
+            console.log(`${i} : `, this.Cards[i]);
+        }
     }
 
     printTotal() {
-        const tot = this.cards.reduce((acc, card) => acc + card.value, 0)
-        console.log(`***${this.name}'s total***:`);
+        const tot = this.Cards.reduce((acc, card) => acc + card.Value, 0)
+        console.log(`***${this.Name}'s total***:`);
         console.log(tot);
     }
 }
@@ -129,18 +168,22 @@ class Validate {
         this.playerStats = [];
         players.forEach((player) => {
             const playerCards = player.getCards();
-            const playerCardsSorted = playerCards.sort((a,b) => this.sortCards(a,b));
-            const playerTotal =  playerCardsSorted.reduce((acc, card) => acc + card.value, 0);
-            this.playerStats.push({Name: player.getName(), Hand: playerCardsSorted, Total: playerTotal})
+            const playerCardsSortedByValue = this.sortCardsByValue(playerCards);
+            const playerTotal =  playerCardsSortedByValue.reduce((acc, card) => acc + card.Value, 0);
+            this.playerStats.push({Name: player.getName(), Hand: playerCardsSortedByValue, Total: playerTotal})
         });
     }
 
-    sortCards(a,b) {
-        const diffValue = b.value - a.value;
-        // Sort by suit if value is same
+    sortCardsByValue(cards) {
+        return cards.sort((a,b) => this.#sortByValue(a,b));
+    }
+
+    #sortByValue(a,b) {
+        const diffValue = b.Value - a.Value;
+        // Sort by Suit if Value is same
         if(diffValue === 0){
-            const suitA = a.suit.toUpperCase(); // ignore upper and lowercase
-            const suitB = b.suit.toUpperCase(); // ignore upper and lowercase
+            const suitA = a.Suit.toUpperCase(); // ignore upper and lowercase
+            const suitB = b.Suit.toUpperCase(); // ignore upper and lowercase
             return (suitB < suitA)? -1: 1;
         }
         else {
@@ -192,6 +235,7 @@ class Game {
     constructor() {
         this.dealer = new Dealer();
         this.players = [];
+        this.pile = new Pile();
     }
 
     addPlayers() {
@@ -209,16 +253,43 @@ class Game {
     }
 
     startGame() {
+        const rounds = 1;
         if(this.players.length < 2) {
             console.error('You need to add players first!');
             return;
         }
 
         this.dealer.deal(5, ...this.players);
+
+        // Game Loop
+        for(let i=0; i<rounds; i++) {
+            this.players.forEach((player) => {
+                player.sortCards();
+                player.printIndex();
+                this.#dropCards(player);
+            });
+        }
+
         this.validate = new Validate(this.players);
         this.validate.printPlayerStats();
         this.validate.printWinner();
+    }
 
+    #dropCards(player) {
+        let [ans, ...rest] = prompt(`Do you wish to drop cards (Yes/No)? `);
+
+        if(ans.toUpperCase() === 'Y') {
+            const ids = prompt(`Select index's of cards to drop (separate index's with comma): `);
+            let idxArr = ids.split(',');
+            idxArr = idxArr.map((idx) => parseInt(idx.trim()));
+            idxArr.forEach((idx) => {
+                const removedCard = player.removeCard(idx);
+                if(removedCard.length>0) {
+                    this.pile.addCards([removedCard]);
+                    player.addCard(deck.removeCard());
+                }
+            });
+        }
     }
 }
 
