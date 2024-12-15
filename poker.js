@@ -1,3 +1,5 @@
+const prompt = require('prompt-sync')();
+
 // Use 'English alphabetical order' to rank suite (see https://en.wikipedia.org/wiki/High_card_by_suit)
 const SUITES = ['Spade', 'Heart', 'Diamond', 'Club']; 
 const NAMES = ['Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Jack', 'Queen', 'King', 'Ace'];
@@ -196,11 +198,11 @@ class Game {
         let playerCnt = 0;
 
         while(playerCnt < 2) {
-            playerCnt = prompt("Please enter the number of players (minimum 2)?");
+            playerCnt = prompt("Please enter the number of players (minimum 2)? ");
         }
 
         for(let i=0; i<playerCnt; i++) {
-            const playerName = prompt(`Please enter Player ${i} name?`);
+            const playerName = prompt(`Please enter Player ${i} name? `);
             const player = new Player(playerName);
             this.players.push(player);
         }
