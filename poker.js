@@ -1,6 +1,7 @@
 const prompt = require('prompt-sync')();
 
-// Use 'English alphabetical order' to rank suite (see https://en.wikipedia.org/wiki/High_card_by_suit)
+const HANDS = ['Straight flush', 'Four of a kind', 'Full house', 'Flush', 'Straight', 'Three of a kind', 'Two pair', 'One pair', 'High card']
+// Use 'English alphabetical order' to rank Suit (see https://en.wikipedia.org/wiki/High_card_by_suit)
 const SUITES = ['Spade', 'Heart', 'Diamond', 'Club']; 
 const NAMES = ['Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Jack', 'Queen', 'King', 'Ace'];
 
@@ -169,9 +170,114 @@ class Validate {
         players.forEach((player) => {
             const playerCards = player.getCards();
             const playerCardsSortedByValue = this.sortCardsByValue(playerCards);
+            const playerHand = this.getHand(playerCardsSortedByValue);
             const playerTotal =  playerCardsSortedByValue.reduce((acc, card) => acc + card.Value, 0);
-            this.playerStats.push({Name: player.getName(), Hand: playerCardsSortedByValue, Total: playerTotal})
+            this.playerStats.push({Name: player.getName(), Hand: playerHand, Cards: playerCardsSortedByValue, Total: playerTotal})
         });
+    }
+
+    getHand(cardsSortedByValue) {
+        for(let i=0; i<HANDS.length; i++) {
+            if(this.#matchHand(HANDS[i], cardsSortedByValue))
+                return i;
+        }
+        return 'High card';
+    }
+
+    #matchHand(hand, cardsSortedByValue) {
+        switch(hand) {
+            case 'Straight flush':
+                return this.#matchStraightFlush(cardsSortedByValue);
+            case 'Four of a kind':
+                return this.#matchFourOfAKind(cardsSortedByValue);
+            case 'Full house':
+                return this.#matchFullHouse(cardsSortedByValue);
+            case 'Flush':
+                return this.#matchFlush(cardsSortedByValue);
+            case 'Straight':
+                return this.#matchStraight(cardsSortedByValue);
+            case 'Three of a kind':
+                return this.#matchThreeOfAKind(cardsSortedByValue);
+            case 'Two pair':
+                return this.#matchTwoPairs(cardsSortedByValue);
+            case 'One pair':
+                return this.#matchOnePair(cardsSortedByValue);
+            default:
+                return true;
+        }
+    }
+
+    #matchStraightFlush(cards) {
+        return this.#matchStraight(cards) && this.#matchFlush(cards);
+    }
+
+    #matchFourOfAKind(cards) {
+        for(let i=0; i<cards.length-3; i++) {
+            if(cards[i].Value === cards[i+1].Value && cards[i+1].Value === cards[i+2].Value && 
+                cards[i+2].Value === cards[i+3].Value && cards[i+3].Value === cards[i+4].Value) {
+                    return true;
+                }
+        }
+        return false;
+    }
+
+    #matchFullHouse(cards) {
+        let pair = false;
+        let threeOfAKind = false;
+        for(let i=0; i<cards.length-1; i++) {
+            if(i<cards.length-2 && cards[i].Value === cards[i+1].Value && cards[i+1].Value === cards[i+2].Value) {
+                threeOfAKind = true;
+                i += 2;
+            }
+            else if(cards[i].Value === cards[i+1].Value) {
+                pair = true;
+                i += 1;
+            }
+        }
+        return pair && threeOfAKind;
+    }
+
+    #matchFlush(cards) {
+        const startSuit = cards[0].Suit
+        return cards.every((card) => card.Suit === startSuit);
+    }
+
+    #matchStraight(cards) {
+        const startVal = cards[0].Value;
+        for(let i=1; i<cards.length; i++) {
+            if(cards[i].Value !== startVal - i) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    #matchThreeOfAKind(cards) {
+        for(let i=0; i<cards.length-2; i++) {
+            if(cards[i].Value === cards[i+1].Value && cards[i+1].Value === cards[i+2].Value) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    #matchTwoPairs(cards) {
+        let pairs = 0;
+        for(let i=0; i<cards.length-1; i++) {
+            if(cards[i].Value === cards[i+1].Value) {
+                pairs++;
+                i += 1;
+            }
+        }
+        return pairs === 2;
+    }
+
+    #matchOnePair(cards) {
+        for(let i=0; i<cards.length-1; i++) {
+            if(cards[i].Value === cards[i+1].Value) 
+                return true;
+        }
+        return false;
     }
 
     sortCardsByValue(cards) {
@@ -193,8 +299,9 @@ class Validate {
 
     printPlayerStats() {
         this.playerStats.forEach((playerStats) => {
-            console.log('Name : ', playerStats.Name);
-            console.log('Hand : ', playerStats.Hand);
+            console.log('Player : ', playerStats.Name);
+            console.log('Hand   : ', HANDS[playerStats.Hand]);
+            console.log('Cards  : ', playerStats.Cards);
             console.log('Total Value : ', playerStats.Total);
             console.log('');
         })
@@ -207,7 +314,7 @@ class Validate {
             return;
         }
 
-        const winner = playerStats.reduce((acc, player) => (player.Total > acc.Total) ? player: acc, playerStats[0]);
+        const winner = playerStats.reduce((acc, player) => (player.Hand < acc.Hand) ? player: acc, playerStats[0]);
         console.log('Winner is : ', winner.Name);
     }
 }
@@ -246,7 +353,7 @@ class Game {
         }
 
         for(let i=0; i<playerCnt; i++) {
-            const playerName = prompt(`Please enter Player ${i} name? `);
+            const playerName = prompt(`Please enter Player ${i+1} name? `);
             const player = new Player(playerName);
             this.players.push(player);
         }
