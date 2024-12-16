@@ -396,8 +396,8 @@ class Game {
     addPlayers() {
         let playerCnt = 0;
 
-        while(playerCnt < 2) {
-            playerCnt = prompt("Please enter number of players (minimum 2)? ");
+        while(playerCnt < 2 || playerCnt > 5) {
+            playerCnt = prompt("Please enter number of players (2-5)? ");
         }
 
         for(let i=0; i<playerCnt; i++) {
