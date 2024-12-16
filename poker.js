@@ -441,7 +441,7 @@ class Game {
                 const removedCard = player.removeCard(idx);
                 if(removedCard.length>0) {
                     this.pile.addCards([removedCard]);
-                    player.addCard(deck.removeCard());
+                    this.dealer.deal(1, player);
                 }
             });
         }
