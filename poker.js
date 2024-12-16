@@ -19,7 +19,7 @@ class Card {
     }
 
     print() {
-        process.stdout.write(`${this.Suit} ${this.Name} ${this.Value}, `)
+        console.log(`Suit: ${this.Suit}, Name: ${this.Name}, Value: ${this.Value}`)
         console.log('');
     }
 }
@@ -331,17 +331,19 @@ class Validate {
     }
 
     #getWinner(player1, player2) {
+        //Get winner by hand
         if(player1.Hand.HandIdx < player2.Hand.HandIdx)
             return player1;
         else if(player1.Hand.HandIdx > player2.Hand.HandIdx)
             return player2;
         else {
-            //Resolve tie by checking Card value
-            return this.#getWinnerByCardValue(player1, player2);
+            //Resolve tie by checking card Value & Suit
+            return this.#resolveTie(player1, player2);
         }
     }
 
-    #getWinnerByCardValue(player1, player2) {
+    #resolveTie(player1, player2) {
+        // Resolve tie by highest card Value
         for(let i=0; i<player1.Hand.Cards.length; i++) {
             if(player1.Hand.Cards[i].Value === player2.Hand.Cards[i].Value)
                 continue;
@@ -352,7 +354,16 @@ class Validate {
                 return player2;
             }
         }
-        return player1;
+
+        // Resolve tie by Suit
+        for(let i=0; i<player1.Hand.Cards.length; i++) {
+            if(SUITES.indexOf(player1.Hand.Cards[i].Suit) < SUITES.indexOf(player2.Hand.Cards[i].Suit)) {
+                return player1;
+            } 
+            else {
+                return player2;
+            }
+        }
     }
 }
 
@@ -386,7 +397,7 @@ class Game {
         let playerCnt = 0;
 
         while(playerCnt < 2) {
-            playerCnt = prompt("Please enter the number of players (minimum 2)? ");
+            playerCnt = prompt("Please enter number of players (minimum 2)? ");
         }
 
         for(let i=0; i<playerCnt; i++) {
@@ -451,6 +462,7 @@ console.log('')
 const deck = new Deck();
 deck.shuffle();
 deck.print();
+deck.printTotal();
 
 //Del 2
 console.log('')
@@ -461,6 +473,7 @@ const luke = new Player('Luke');
 deal(deck, 5, slim, luke);
 
 deck.print();
+deck.printTotal();
 slim.print();
 slim.printTotal();
 luke.print();
@@ -477,6 +490,7 @@ pile.addCards(luke.removeCards(2));
 deal(deck, 2, slim, luke);
 
 deck.print();
+deck.printTotal();
 slim.print();
 slim.printTotal();
 luke.print();
