@@ -1,28 +1,31 @@
-const playersContainerElement = document.getElementById("players-container-id");
+const playerContainerElement = document.getElementById("player-container-id");
+const playerDialog = document.getElementById("player-dialog-id");
+const playerDialogCountFieldset = document.getElementById("player-dialog-fieldset-id");
+const playerDialogNameContainerElement = document.getElementById("player-dialog-name-container-id");
+const playerDialogOkBtn = document.getElementById("player-dialog-ok-btn-id");
+const dealBtn = document.getElementById("deal-button-id"); 
 
 // The following rules have been applied: https://en.wikipedia.org/wiki/List_of_poker_hands#cite_note-:5-13
 const HANDS = ['Straight flush', 'Four of a kind', 'Full house', 'Flush', 'Straight', 'Three of a kind', 'Two pair', 'One pair', 'High card']
 // Use 'English alphabetical order' to rank Suit (see https://en.wikipedia.org/wiki/High_card_by_suit)
 const SUITES = ['Spade', 'Heart', 'Diamond', 'Club'];
-const NAMES = ['Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Jack', 'Queen', 'King', 'Ace'];
 const SUITE_HTML = ['&spades;', '&hearts;', '&diams;', '&clubs;'];
 const SUITE_COLOR_HTML = ['black', 'red', 'red', 'black'];
 const VALUE_HTML = ['', '' , '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
 
 class Card {
-    constructor(id, suit, name, value) {
+    constructor(id, suit, value) {
         this.Id = id;
         this.Suit = suit;
-        this.Name = name;
         this.Value = value;
     }
 
     clone() {
-        return new Card(this.Suit, this.Name, this.Value);
+        return new Card(this.Suit, this.Value);
     }
 
     print() {
-        console.log(`Suit: ${this.Suit}, Name: ${this.Name}, Value: ${this.Value}`)
+        console.log(`Suit: ${this.Suit}, Value: ${this.Value}`)
         console.log('');
     }
 }
@@ -33,7 +36,7 @@ class Deck {
         let id = 0;
         for(let i=0; i<4; i++) {
             for(let j=2; j<15; j++) {
-                const card = new Card(id++, SUITES[i], NAMES[j-2], j);
+                const card = new Card(id++, SUITES[i], j);
                 this.deck.push(card);
             }
         }
@@ -103,7 +106,7 @@ class Player {
     constructor(name) {
         this.Name = name;
         this.Cards = [];
-        this.#createPlayerElement(playersContainerElement, name);
+        this.#createPlayerElement(playerContainerElement, name);
     }
 
     #createPlayerElement(parentElement, name) {
@@ -444,19 +447,43 @@ class Game {
         this.dealer = new Dealer();
         this.players = [];
         this.pile = new Pile();
+        this.#updatePlayerInputElements(2);
+        playerDialogCountFieldset.addEventListener('click', (e) => this.#updatePlayerInputElements(parseInt(e.target.dataset.id)));
+        playerDialogOkBtn.addEventListener('click', (e) => {
+            this.#createPlayers();
+            playerDialog.close();
+            playerDialog.classList.toggle("collapsed");
+            this.startGame();
+        });
     }
 
-    addPlayers() {
-        let playerCnt = 0;
-
-        while(playerCnt < 2 || playerCnt > 5) {
-            playerCnt = prompt("Please enter number of players (2-5)? ");
-        }
-
-        for(let i=0; i<playerCnt; i++) {
-            const playerName = prompt(`Please enter name for Player ${i+1}? `);
-            const player = new Player(playerName);
+    #createPlayers() {
+        const inputElements = playerDialogNameContainerElement.querySelectorAll("input");
+        for(const inputElement of inputElements){
+            const player = new Player(inputElement.value);
             this.players.push(player);
+        }
+    }
+
+    #updatePlayerInputElements(playerCnt) {
+        const currentInputElementCount = playerDialogNameContainerElement.children.length;
+
+        if(playerCnt>currentInputElementCount) {
+            // Add input elements
+            for(let i=currentInputElementCount; i<playerCnt; i++) {
+                const divElement = document.createElement("div");
+                divElement.innerHTML = `
+                <label for="player${i+1}-id" class="">Player ${i+1}</label>
+                <input type="text" id="player${i+1}-id" minlength="1" maxlength="30" size="20">
+                `;
+                playerDialogNameContainerElement.appendChild(divElement);
+            }
+        } else if(playerCnt<currentInputElementCount) {
+            // Remove input elements
+            const cnt = currentInputElementCount - playerCnt;
+            for(let i=0; i<cnt; i++) {
+                playerDialogNameContainerElement.removeChild(playerDialogNameContainerElement.lastChild);
+            }
         }
     }
 
@@ -501,16 +528,6 @@ class Game {
     }
 }
 
-function deal(deck, cards, ...players) {
-    for(let i=0; i<cards; i++) {
-        players.forEach((player) => player.addCard(deck.removeCard()));
-    }
-}
-
-console.log('')
-console.log('***DEL 7***:')
-console.log('')
-
+playerDialog.showModal();
+playerDialog.classList.toggle("collapsed");
 const game = new Game();
-game.addPlayers();
-game.startGame();

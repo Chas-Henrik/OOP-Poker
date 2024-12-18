@@ -1,21 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Mea+Culpa&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./index.css">
-    <script src="./index.js" defer></script>
-    <title>Poker</title>
-</head>
-<body class="board">
-    <div id="players-container-id" class="players-container"></div>
-
-
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Mea+Culpa&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="./index.css">
+        <script src="./index.js" defer></script>
+        <title>Poker</title>
+    </head>
+    <body>
+        <main class="board">
+            <dialog id="player-dialog-id" class="player-dialog collapsed">
+                <h2>Please enter Player Names</h2>
+                <fieldset id="player-dialog-fieldset-id" class="player-dialog-fieldset">
+                    <legend>Select number of Players</legend>
+                    <button type="button" data-id="2" class="player-dialog-cnt-btn">2</button>
+                    <button type="button" data-id="3" class="player-dialog-cnt-btn">3</button>
+                    <button type="button" data-id="4" class="player-dialog-cnt-btn">4</button>
+                    <button type="button" data-id="5" class="player-dialog-cnt-btn">5</button>
+                </fieldset>
+                <fieldset>
+                    <legend>Player Name</legend>
+                    <div id="player-dialog-name-container-id"></div>
+                </fieldset>
+                <button type="button" id="player-dialog-ok-btn-id">OK</button>
+            </dialog>
+            <div id="player-container-id" class="player-container"></div>
+        </main>
+        <footer class="footer">
+            <button id="deal-button-id" class="footer-buttons">DEAL</button>
+        </footer>
+    </body>
 </html>
