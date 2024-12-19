@@ -106,6 +106,10 @@ main {
     letter-spacing: 0.2rem;
 }
 
+.card:hover {
+    cursor: alias;
+}
+
 .card-front {
     min-width: 10rem;
     width: 10rem;

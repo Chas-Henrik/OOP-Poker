@@ -127,6 +127,7 @@ class Player {
 
         //Card Container
         const cardElement = document.createElement('div');
+        cardElement.title="Click to flip card";
         cardElement.id = `card-${card.Id}`;
         cardElement.dataset.id = card.Id;
         cardElement.dataset.frontUp = frontUp;
