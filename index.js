@@ -111,16 +111,8 @@ class Player {
 
     #createPlayerElement(parentElement, name) {
         this.playerElement = document.createElement("div");
-
-        this.cardContainerElement = document.createElement('div');
-        this.cardContainerElement.className = "card-container";
-        this.playerElement.appendChild(this.cardContainerElement);
-
-        this.playerNameElement = document.createElement('p')
-        this.playerNameElement.className = "player-name";
-        this.playerNameElement.innerText = name;
-        this.playerElement.appendChild(this.playerNameElement);
-
+        this.playerElement.innerHTML = `<div class="card-container"></div><p class="player-name">${name}</p>`
+        this.cardContainerElement = this.playerElement.querySelector(".card-container");
         parentElement.appendChild(this.playerElement);
     }
 
