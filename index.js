@@ -1,9 +1,11 @@
-const playerContainerElement = document.getElementById("player-container-id");
+const playersContainerElement = document.getElementById("players-container-id");
 const playerDialog = document.getElementById("player-dialog-id");
 const playerDialogCountFieldset = document.getElementById("player-dialog-fieldset-id");
 const playerDialogNameContainerElement = document.getElementById("player-dialog-name-container-id");
 const playerDialogOkBtn = document.getElementById("player-dialog-ok-btn-id");
 const dealBtn = document.getElementById("deal-button-id"); 
+
+// To be considered: https://deckofcardsapi.com/static/img/6H.svg
 
 // The following rules have been applied: https://en.wikipedia.org/wiki/List_of_poker_hands#cite_note-:5-13
 const HANDS = ['Straight flush', 'Four of a kind', 'Full house', 'Flush', 'Straight', 'Three of a kind', 'Two pair', 'One pair', 'High card']
@@ -106,11 +108,12 @@ class Player {
     constructor(name) {
         this.Name = name;
         this.Cards = [];
-        this.#createPlayerElement(playerContainerElement, name);
+        this.#createPlayerElement(playersContainerElement, name);
     }
 
     #createPlayerElement(parentElement, name) {
         this.playerElement = document.createElement("div");
+        this.playerElement.className = "player";
         this.playerElement.innerHTML = `<div class="card-container"></div><p class="player-name">${name}</p>`
         this.cardContainerElement = this.playerElement.querySelector(".card-container");
         parentElement.appendChild(this.playerElement);
@@ -482,8 +485,8 @@ class Game {
             this.#createPlayers();
             playerDialog.close();
             playerDialog.classList.toggle("collapsed");
-            this.startGame();
         });
+        dealBtn.addEventListener('click', (e) => this.startGame());
     }
 
     #createPlayers() {

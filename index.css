@@ -68,7 +68,7 @@ main {
     height: 100svh;
 }
 
-.player-container {
+.players-container {
     width: 100%;
     height: fit-content;
     display: flex;
@@ -84,6 +84,19 @@ main {
     width: fit-content;
 }
 
+.card-container {
+    margin: 1rem;
+    padding: 1rem;
+    min-height: 17.2rem;
+    min-width: 58rem;
+    width: fit-content;
+    display: flex;
+    justify-content: space-around;
+    column-gap: 1rem;
+    border: 5px solid rgb(128, 190, 35);
+    border-radius: 10px;
+}
+
 .player-name {
     margin: 1.5rem;
     text-align: center;
@@ -91,14 +104,6 @@ main {
     font-size: 3rem;
     font-family: "Mea Culpa", cursive;
     letter-spacing: 0.2rem;
-}
-
-.card-container {
-    margin: 1rem;
-    width: fit-content;
-    display: flex;
-    justify-content: space-around;
-    column-gap: 1rem;
 }
 
 .card-front {
@@ -181,6 +186,7 @@ main {
     background-color: rgb(255, 101, 45);
     color: yellow;
     box-shadow: 2px 2px 10px 0px #160404fd;
+    cursor: pointer;
 }
 
 .footer-buttons:hover {
