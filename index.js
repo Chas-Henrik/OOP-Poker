@@ -124,24 +124,61 @@ class Player {
         parentElement.appendChild(this.playerElement);
     }
 
-    #createCardElement(card) {
+    #createCardElement(card, frontUp = true) {
         const suitIndex = SUITES.indexOf(card.Suit);
         const suitHTML = SUITE_HTML[suitIndex];
         const suitColorHTML = SUITE_COLOR_HTML[suitIndex];
         const valueHTML = VALUE_HTML[card.Value];
+
+        //Card Container
         const cardElement = document.createElement('div');
-        cardElement.dataset.id = card.Id;
         cardElement.id = `card-${card.Id}`;
-        cardElement.className = "card " + suitColorHTML;
+        cardElement.dataset.id = card.Id;
+        cardElement.dataset.frontUp = frontUp;
+        cardElement.className = "card";
         cardElement.addEventListener("click", (e) => {
-            e.currentTarget.classList.toggle("red-border");
+            this.#flipCard(e.currentTarget);
         });
-        cardElement.innerHTML = `
+
+        //Card Front
+        const cardFrontElement = document.createElement('div');
+        cardFrontElement.className = "card-front " + suitColorHTML;        
+        cardFrontElement.innerHTML = `
             <aside class="top"><p class="value">${valueHTML}</p><p class="suit">${suitHTML}</p></aside>
             <p class="center suit">${suitHTML}</p>
             <aside class="bottom"><p class="suit mirror-flip">${suitHTML}</p><p class="value mirror-flip">${valueHTML}</p></aside>
             `
+        if(!frontUp)
+            cardBackElement.classList.add("collapsed");
+        
+        //Card Back
+        const cardBackElement = document.createElement('div');
+        cardBackElement.className = "card-back";
+        cardBackElement.innerHTML = `
+            <img type="img" src="./svg/card-back.svg" alt="Card Back" class="card-back">
+            `
+        if(frontUp) 
+            cardBackElement.classList.add("collapsed");
+        
+        // Attach cards to DOM
         this.cardContainerElement.appendChild(cardElement);
+        cardElement.appendChild(cardFrontElement);
+        cardElement.appendChild(cardBackElement);
+        }
+
+    #flipCard(cardContainer) {
+        const frontUp = !(cardContainer.dataset.frontUp === 'true');
+        const cardFront = cardContainer.querySelector('.card-front');
+        const cardBack = cardContainer.querySelector('.card-back');
+
+        cardContainer.dataset.frontUp = frontUp;
+        if(frontUp) {
+            cardBack.classList.add("collapsed");
+            cardFront.classList.remove("collapsed");
+        } else {
+            cardFront.classList.add("collapsed");
+            cardBack.classList.remove("collapsed");
+        }
     }
 
     #removeCardElement(card) {

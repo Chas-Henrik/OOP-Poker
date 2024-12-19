@@ -59,7 +59,7 @@ main {
 }
 
 .collapsed {
-    display: none;
+    display: none !important;
 }
 
 .board {
@@ -102,9 +102,13 @@ main {
 }
 
 .card {
+
+}
+
+.card-front {
     min-width: 10rem;
     width: 10rem;
-    aspect-ratio: 10/15;
+    aspect-ratio: 10 / 14.2;
     padding: 0.5rem;
     background-color: white;
     border-radius: 5px;
@@ -113,8 +117,10 @@ main {
     font-size: 1.8rem;
 }
 
-.red-border {
-    border: 2px solid red;
+.card-back {
+    width: 10rem;
+    aspect-ratio: 10 / 14;
+    object-fit: scale-down;
 }
 
 .top {
