@@ -165,6 +165,10 @@ main {
     color: black;
 }
 
+.footer-margin {
+    width: 100vw;
+    height: 10rem;
+}
 
 .footer {
     width: 100vw;
