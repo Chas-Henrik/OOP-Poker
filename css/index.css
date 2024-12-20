@@ -68,7 +68,7 @@ main {
     height: 100svh;
 }
 
-.players-container {
+.player-collection-container {
     width: 100%;
     height: fit-content;
     display: flex;
@@ -79,7 +79,7 @@ main {
     row-gap: 2rem;
 }
 
-.player {
+.player-container {
     margin: 2rem;
     width: fit-content;
 }
@@ -106,7 +106,13 @@ main {
     letter-spacing: 0.2rem;
 }
 
-.card:hover {
+.card-holder {
+    min-width: 10rem;
+    width: 10rem;
+    aspect-ratio: 10 / 14.2;
+}
+
+.card-holder:hover {
     cursor: alias;
 }
 
@@ -123,6 +129,7 @@ main {
 }
 
 .card-back {
+    min-width: 10rem;
     width: 10rem;
     aspect-ratio: 10 / 14;
     object-fit: scale-down;
