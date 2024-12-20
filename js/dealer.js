@@ -12,4 +12,11 @@ export class Dealer {
             players.forEach((player) => player.addCard(this.deck.removeCard()));
         }
     }
+
+    replace(cardHolders, player) {
+        const replacedCards = [];
+        cardHolders.forEach((cardHolder) => replacedCards.push(player.replaceCardHolder(cardHolder, this.deck.removeCard())));
+        return replacedCards;
+    }
+
 }

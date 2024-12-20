@@ -2,17 +2,17 @@ export const SUITES = ['Spade', 'Heart', 'Diamond', 'Club'];
 
 export class Card {
     constructor(id, suit, value) {
-        this.Id = id;
-        this.Suit = suit;
-        this.Value = value;
+        this.id = id;
+        this.suit = suit;
+        this.value = value;
     }
 
     clone() {
-        return new Card(this.Suit, this.Value);
+        return new Card(this.suit, this.value);
     }
 
     print() {
-        console.log(`Suit: ${this.Suit}, Value: ${this.Value}`)
+        console.log(`Suit: ${this.suit}, Value: ${this.value}`)
         console.log('');
     }
 }

@@ -185,6 +185,7 @@ main {
     background: linear-gradient(rgb(131, 97, 97) 0%, rgb(109, 29, 29) 15%, rgb(109, 29, 29) 100%);
     display: flex;
     justify-content: center;
+    column-gap: 3rem;
 }
 
 .footer-buttons {
@@ -195,17 +196,24 @@ main {
     letter-spacing: 0.2rem;
     font-size: 3rem;
     font-weight: 700;
-    font-style: italic;
     border: 2px solid white;
     border-radius: 10px;
-    background-color: rgb(255, 101, 45);
+    background-color: rgb(45, 255, 115);
     color: yellow;
     box-shadow: 2px 2px 10px 0px #160404fd;
     cursor: pointer;
 }
 
+.footer-button-disable {
+    background-color: rgb(203, 206, 204);
+}
+
 .footer-buttons:hover {
-    background-color: rgb(253, 143, 103);
-    color: yellow;
+    background-color: rgb(45, 255, 115);
     box-shadow: none;
+}
+
+.footer-button-disable:hover {
+    background-color: rgb(203, 206, 204);
+    box-shadow: 2px 2px 10px 0px #160404fd;
 }

@@ -7,13 +7,15 @@ const playerDialog = document.getElementById("player-dialog-id");
 const playerDialogCountFieldset = document.getElementById("player-dialog-fieldset-id");
 const playerDialogNameContainerElement = document.getElementById("player-dialog-name-container-id");
 const playerDialogOkBtn = document.getElementById("player-dialog-ok-btn-id");
-const dealBtn = document.getElementById("deal-button-id"); 
+const dealBtn = document.getElementById("deal-button-id");
+const drawBtn = document.getElementById("draw-button-id");
 
 export class Game {
     constructor() {
         this.dealer = new Dealer();
         this.players = [];
         this.pile = new Pile();
+        this.gameState = "start";
         playerDialog.showModal();
         playerDialog.classList.toggle("collapsed");
         this.#updatePlayerInputElements(2);
@@ -23,7 +25,8 @@ export class Game {
             playerDialog.close();
             playerDialog.classList.toggle("collapsed");
         });
-        dealBtn.addEventListener('click', (e) => this.startGame());
+
+        dealBtn.addEventListener('click', (e) => this.#dealCards());
     }
 
     #createPlayers() {
@@ -54,6 +57,22 @@ export class Game {
                 playerDialogNameContainerElement.removeChild(playerDialogNameContainerElement.lastChild);
             }
         }
+    }
+
+    #dealCards() {
+        this.dealer.deal(5, ...this.players);
+        drawBtn.classList.remove("footer-button-disable");
+        drawBtn.addEventListener('click', (e) => this.#drawCards());
+        dealBtn.classList.add("footer-button-disable");
+        dealBtn.removeEventListener('click', this.#dealCards);
+    }
+
+    #drawCards() {
+        this.players.forEach((player) => this.pile.addCards(this.dealer.replace(player.getCardHolderRequests(), player)));
+        dealBtn.classList.remove("footer-button-disable");
+        dealBtn.addEventListener('click', (e) => this.#dealCards());
+        drawBtn.classList.add("footer-button-disable");
+        drawBtn.removeEventListener('click', this.#drawCards);
     }
 
     startGame() {
