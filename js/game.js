@@ -15,7 +15,7 @@ export class Game {
         this.dealer = new Dealer();
         this.players = [];
         this.pile = new Pile();
-        this.gameState = "start";
+        this.gameState = 'start';
         playerDialog.showModal();
         playerDialog.classList.toggle("collapsed");
         this.#updatePlayerInputElements(2);
@@ -24,9 +24,11 @@ export class Game {
             this.#createPlayers();
             playerDialog.close();
             playerDialog.classList.toggle("collapsed");
+            this.gameState = 'deal';
         });
 
-        dealBtn.addEventListener('click', (e) => this.#dealCards());
+        dealBtn.addEventListener('click', (e) => this.dealCards());
+        drawBtn.addEventListener('click', (e) => this.drawCards());
     }
 
     #createPlayers() {
@@ -59,59 +61,23 @@ export class Game {
         }
     }
 
-    #dealCards() {
-        this.dealer.deal(5, ...this.players);
-        drawBtn.classList.remove("footer-button-disable");
-        drawBtn.addEventListener('click', (e) => this.#drawCards());
-        dealBtn.classList.add("footer-button-disable");
-        dealBtn.removeEventListener('click', this.#dealCards);
-    }
-
-    #drawCards() {
-        this.players.forEach((player) => this.pile.addCards(this.dealer.replace(player.getCardHolderRequests(), player)));
-        dealBtn.classList.remove("footer-button-disable");
-        dealBtn.addEventListener('click', (e) => this.#dealCards());
-        drawBtn.classList.add("footer-button-disable");
-        drawBtn.removeEventListener('click', this.#drawCards);
-    }
-
-    startGame() {
-        const rounds = 1;
-        if(this.players.length < 2) {
-            console.error('You need to add players first!');
-            return;
+    dealCards() {
+        if(this.gameState === 'deal')  {
+            this.players.forEach((player) => player.removeCards());
+            this.dealer.deal(5, ...this.players);
+            drawBtn.classList.remove("footer-button-disable");
+            dealBtn.classList.add("footer-button-disable");
+            this.gameState = 'draw';
         }
-
-        this.dealer.deal(5, ...this.players);
-
-        // Game Loop
-        // for(let i=0; i<rounds; i++) {
-        //     this.players.forEach((player) => {
-        //         player.sortCards();
-        //         player.printIndex();
-        //         this.#dropCards(player);
-        //     });
-        // }
-
-        // this.validate = new Validate(this.players);
-        // this.validate.printPlayerStats();
-        // this.validate.printWinner();
     }
 
-    #dropCards(player) {
-        let [ans, ...rest] = prompt(`Do you wish to drop cards (Yes/No)? `);
-
-        if(ans.toUpperCase() === 'Y') {
-            const ids = prompt(`Select index's of cards to drop (separate index's with comma): `);
-            let idxArr = ids.split(',');
-            idxArr = idxArr.map((idx) => parseInt(idx.trim()));
-            idxArr.forEach((idx) => {
-                const removedCard = player.removeCard(idx);
-                if(removedCard.length>0) {
-                    this.pile.addCards([removedCard]);
-                    this.dealer.deal(1, player);
-                }
-            });
+    drawCards() {
+        if(this.gameState === 'draw')  {
+            this.players.forEach((player) => this.pile.addCards(this.dealer.replace(player.getCardHolderRequests(), player)));
+            dealBtn.classList.remove("footer-button-disable");
+            drawBtn.classList.add("footer-button-disable");
+            this.dealer.newDeck();
+            this.gameState = 'deal';
         }
     }
 }

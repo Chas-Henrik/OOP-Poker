@@ -7,6 +7,11 @@ export class Dealer {
         this.deck.shuffle();
     }
 
+    newDeck() {
+        this.deck = new Deck();
+        this.deck.shuffle();
+    }
+
     deal(cards, ...players) {
         for(let i=0; i<cards; i++) {
             players.forEach((player) => player.addCard(this.deck.removeCard()));

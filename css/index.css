@@ -84,7 +84,7 @@ main {
     width: fit-content;
 }
 
-.card-container {
+.player-card-container {
     margin: 1rem;
     padding: 1rem;
     min-height: 17.2rem;
@@ -97,13 +97,23 @@ main {
     border-radius: 10px;
 }
 
-.player-name {
+.player-name, .player-hand {
     margin: 1.5rem;
     text-align: center;
-    color: white;
-    font-size: 3rem;
-    font-family: "Mea Culpa", cursive;
     letter-spacing: 0.2rem;
+}
+
+.player-hand {
+    color: rgb(128, 190, 35);
+    font-family: "Mea Culpa", cursive;
+    font-size: 3rem;
+    font-style: italic;
+}
+
+.player-name {
+    color: white;
+    font-family: "Mea Culpa", cursive;
+    font-size: 3rem;
 }
 
 .card-holder {

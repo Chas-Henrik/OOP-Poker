@@ -1,4 +1,5 @@
 import { SUITES } from "./card.js";
+import { Validate, HANDS } from "./validate.js"
 
 const SUITE_HTML = ['&spades;', '&hearts;', '&diams;', '&clubs;'];
 const SUITE_COLOR_HTML = ['black', 'red', 'red', 'black'];
@@ -12,8 +13,11 @@ export class Player {
         this.MAX_CARDS = 5;
         this.cardCount = 0;
         this.playerContainerElement = this.#createPlayerContainerElement(playerCollectionContainerElement);
-        this.cardContainerElement = this.#createCardContainerElement(this.playerContainerElement, name)
-        this.cardHolders = this.#createCardHolderElements(this.cardContainerElement);
+        this.playerContainerElement.innerHTML = `<p class="player-hand"></p><div class="player-card-container"></div><p class="player-name">${name}</p>`;
+        this.playerHandElement = this.playerContainerElement.querySelector(".player-hand");
+        this.playerCardContainerElement = this.playerContainerElement.querySelector(".player-card-container");
+        this.playerNameElement = this.playerContainerElement.querySelector(".player-hand");
+        this.cardHolders = this.#createCardHolderElements(this.playerCardContainerElement);
     }
 
     #createPlayerContainerElement(gameBoardElement, name) {
@@ -23,12 +27,7 @@ export class Player {
         return playerContainerElement;
     }
 
-    #createCardContainerElement(playerContainerElement, name) {
-        playerContainerElement.innerHTML = `<div class="card-container"></div><p class="player-name">${name}</p>`;
-        return playerContainerElement.querySelector(".card-container");
-    }
-
-    #createCardHolderElements(cardContainerElement){
+    #createCardHolderElements(playerCardContainerElement){
         const cardHolders = [];
         //Create Card Holders
         for(let i=0; i<this.MAX_CARDS; i++) {
@@ -37,7 +36,12 @@ export class Player {
             cardHolderElement.className = "card-holder";
             cardHolders.push(cardHolderElement);
             // Attach card holder to DOM
-            cardContainerElement.appendChild(cardHolderElement);
+            playerCardContainerElement.appendChild(cardHolderElement);
+
+            // Add event listener
+            cardHolderElement.addEventListener("click", (e) => {
+                this.#flipCard(e.currentTarget);
+            });
         }
         return cardHolders;
     }
@@ -50,46 +54,20 @@ export class Player {
 
         const cardHolderElement = this.cardHolders[this.cardCount];
 
-        // Create Card sides
-        const cardFrontElement = this.#createCardFrontElement(card, frontUp);
-        const cardBackElement = this.#createCardBackElement(frontUp);
-        
-        // Attach Card info to Card Holder
-        cardHolderElement.id = `card-${card.id}`;
-        cardHolderElement.dataset.id = card.id;
-        cardHolderElement.dataset.frontUp = frontUp;
-        cardHolderElement.dataset.card = card;
-        cardHolderElement.addEventListener("click", (e) => {
-            this.#flipCard(e.currentTarget);
-        });
-        
-        // Attach card to card holder
-        cardHolderElement.appendChild(cardFrontElement);
-        cardHolderElement.appendChild(cardBackElement);
+        this.addCardToCardHolder(cardHolderElement, card, frontUp);
 
-        this.cardCount++;
+        // Update Hand info
+        this.#updateHandInfo();
     }
 
     replaceCardHolder(cardHolderElement, card) {
         const frontUp = true;
-        const oldCard = cardHolderElement.dataset.card;
+        const oldCard = this.removeCard(cardHolderElement);
 
-        // Empty Card Holder
-        cardHolderElement.innerHTML = "";
+        this.addCardToCardHolder(cardHolderElement, card, frontUp);
 
-        // Create new Card
-        const cardFrontElement = this.#createCardFrontElement(card, frontUp);
-        const cardBackElement = this.#createCardBackElement(frontUp);
-        
-        // Update Card Holder
-        cardHolderElement.id = `card-${card.id}`;
-        cardHolderElement.dataset.id = card.id;
-        cardHolderElement.dataset.frontUp = frontUp;
-        cardHolderElement.dataset.card = card;
-        
-        // Attach card to card holder
-        cardHolderElement.appendChild(cardFrontElement);
-        cardHolderElement.appendChild(cardBackElement);
+        // Update Hand info
+        this.#updateHandInfo();
 
         return oldCard;
     }
@@ -134,6 +112,9 @@ export class Player {
         const cardFront = cardHolder.querySelector('.card-front');
         const cardBack = cardHolder.querySelector('.card-back');
 
+        if(cardFront === null || cardBack === null)
+            return;
+
         cardHolder.dataset.frontUp = frontUp;
         if(frontUp) {
             cardBack.classList.add("collapsed");
@@ -144,9 +125,13 @@ export class Player {
         }
     }
 
-    #removeCardElement(card) {
-        const cardElement = this.cardContainerElement.getElementById(`card-${card.id}`);
-        this.cardContainerElement.removeChild(cardElement);
+    #updateHandInfo() {
+        const hand = Validate.getHand(this.getCards());
+        this.playerHandElement.textContent = HANDS[hand.HandIdx];
+    }
+
+    getCards() {
+        return this.cardHolders.reduce((acc, cardHolder) => (cardHolder.dataset.card !== undefined) ? [...acc,  JSON.parse(cardHolder.dataset.card)] : acc, []);
     }
 
     getName() {
@@ -161,55 +146,37 @@ export class Player {
         cards.forEach((card) => this.addCard(card));
     }
 
-    removeCard(idx) {
-        if(idx < this.cards.length) {
-            this.#removeCardElement(this.cards[idx]);
-            return this.cards.splice(idx, 1);
-        }
-        else {
-            return [];
-        }
+    addCardToCardHolder(cardHolderElement, card, frontUp) {
+        // Create new Card
+        const cardFrontElement = this.#createCardFrontElement(card, frontUp);
+        const cardBackElement = this.#createCardBackElement(frontUp);
+        
+        // Update Card Holder
+        cardHolderElement.dataset.frontUp = frontUp;
+        cardHolderElement.dataset.card = JSON.stringify(card);
+        
+        // Attach card to card holder
+        cardHolderElement.appendChild(cardFrontElement);
+        cardHolderElement.appendChild(cardBackElement);
+
+        this.cardCount++;
     }
 
-    removeCards(cnt) {
-        if(this.cards.length < cnt) {
-            console.error("Not enough cards");
-            return [];
-        } 
-        else {
-            for(let i=0; i<cnt; i++) {
-                this.#removeCardElement(this.cards[idx]);
-            }
-            return this.cards.splice(0, cnt);
-        }
-    }
+    removeCard(cardHolderElement) {
+        if(cardHolderElement.dataset.card !== undefined) {
+            const removedCard = JSON.parse(cardHolderElement.dataset.card);
+            delete cardHolderElement.dataset.card;
+            this.cardCount--;
+            // Empty Card Holder
+            cardHolderElement.innerHTML = "";
 
-    getCards() {
-        return [...this.cards];
-    }
 
-    sortCards() {
-        const validate = new Validate([this]);
-        this.cards = validate.sortCardsByValue(this.cards)
-    }
-
-    print() {
-        console.log('');
-        console.log(`***${this.name}'s cards***:`)
-        console.log(this.cards);
-    }
-
-    printIndex() {
-        console.log('');
-        console.log(`***${this.name}'s cards***:`)
-        for(let i=0; i<this.cards.length; i++) {
-            console.log(`${i} : `, this.cards[i]);
+            return removedCard;
         }
     }
 
-    printTotal() {
-        const tot = this.cards.reduce((acc, card) => acc + card.Value, 0)
-        console.log(`***${this.name}'s total***:`);
-        console.log(tot);
+    removeCards() {
+        return this.cardHolders.map((cardHolderElement) => this.removeCard(cardHolderElement));
     }
+
 }
