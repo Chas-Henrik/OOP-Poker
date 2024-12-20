@@ -9,7 +9,7 @@
 html {
     font-family: serif;
     font-weight: 600;
-    font-size: 62.5%;
+    font-size: calc(62.5% / 1.5);
 }
 
 main {
@@ -226,4 +226,20 @@ main {
 .footer-button-disable:hover {
     background-color: rgb(203, 206, 204);
     box-shadow: 2px 2px 10px 0px #160404fd;
+}
+
+/* On screens that are 650px to 1024px (Tablets & Small Desktops) */
+@media (min-width: 650px) {
+
+    html {
+        font-size: calc(62.5% / 1.25);
+    }
+}
+
+/* On screens that are 1024px or more (Medium & Large Desktops) */
+@media (min-width: 1024px) {
+
+    html {
+        font-size: 62.5%;
+    }
 }
