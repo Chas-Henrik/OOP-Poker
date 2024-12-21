@@ -17,13 +17,13 @@ html {
     font-size: calc(62.5% / 2.0);
 }
 
-main {
-    padding: 2rem;
-}
-
 body {
     height: 100svh;
     background-color: green;
+}
+
+main {
+    padding: 2rem;
 }
 
 .player-dialog {
