@@ -12,7 +12,7 @@
 }
 
 html {
-    font-family: serif;
+    font-family: "Poppins", serif;
     font-weight: 600;
     font-size: calc(62.5% / 2.0);
 }
@@ -23,7 +23,6 @@ main {
 
 body {
     min-width: 320px;
-    width: 100vw;
     height: 100svh;
     overflow-x: hidden;
     background-color: green;
