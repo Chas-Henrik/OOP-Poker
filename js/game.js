@@ -48,8 +48,7 @@ export class Game {
             for(let i=currentInputElementCount; i<playerCnt; i++) {
                 const divElement = document.createElement("div");
                 divElement.innerHTML = `
-                <label for="player${i+1}-id" class="">Player ${i+1}</label>
-                <input type="text" id="player${i+1}-id" minlength="1" maxlength="30" size="20">
+                <input type="text" id="player${i+1}-id" minlength="1" maxlength="30" size="20" placeholder="Player ${i+1}'s Name">
                 `;
                 playerDialogNameContainerElement.appendChild(divElement);
             }
