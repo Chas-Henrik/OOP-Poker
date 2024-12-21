@@ -14,6 +14,7 @@ export class Game {
     constructor() {
         this.dealer = new Dealer();
         this.players = [];
+        this.winner = null;
         this.pile = new Pile();
         this.gameState = 'start';
         playerDialog.showModal();
@@ -63,6 +64,10 @@ export class Game {
 
     dealCards() {
         if(this.gameState === 'deal')  {
+            if(this.winner != null) {
+                this.winner.resetWinner();
+                this.winner = null;
+            }
             this.players.forEach((player) => player.removeCards());
             this.dealer.deal(5, ...this.players);
             drawBtn.classList.remove("footer-button-disable");
@@ -76,6 +81,9 @@ export class Game {
             this.players.forEach((player) => this.pile.addCards(this.dealer.replace(player.getCardHolderRequests(), player)));
             dealBtn.classList.remove("footer-button-disable");
             drawBtn.classList.add("footer-button-disable");
+            const validate = new Validate(this.players);
+            this.winner = validate.getWinner();
+            this.winner.setWinner();
             this.dealer.newDeck();
             this.gameState = 'deal';
         }

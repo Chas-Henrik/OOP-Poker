@@ -80,7 +80,6 @@ main {
 }
 
 .player-container {
-    margin: 2rem;
     width: fit-content;
 }
 
@@ -108,13 +107,16 @@ main {
     color: rgb(128, 190, 35);
     font-family: "Mea Culpa", cursive;
     font-size: 3rem;
-    font-style: italic;
 }
 
 .player-name {
     color: white;
     font-family: "Mea Culpa", cursive;
     font-size: 3rem;
+}
+
+.winner {
+    color: yellow;
 }
 
 .card-holder {

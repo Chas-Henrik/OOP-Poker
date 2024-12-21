@@ -16,7 +16,7 @@ export class Player {
         this.playerContainerElement.innerHTML = `<p class="player-hand"></p><div class="player-card-container"></div><p class="player-name">${name}</p>`;
         this.playerHandElement = this.playerContainerElement.querySelector(".player-hand");
         this.playerCardContainerElement = this.playerContainerElement.querySelector(".player-card-container");
-        this.playerNameElement = this.playerContainerElement.querySelector(".player-hand");
+        this.playerNameElement = this.playerContainerElement.querySelector(".player-name");
         this.cardHolders = this.#createCardHolderElements(this.playerCardContainerElement);
     }
 
@@ -127,7 +127,7 @@ export class Player {
 
     #updateHandInfo() {
         const hand = Validate.getHand(this.getCards());
-        this.playerHandElement.textContent = HANDS[hand.HandIdx];
+        this.playerHandElement.textContent = HANDS[hand.handIdx];
     }
 
     getCards() {
@@ -179,4 +179,15 @@ export class Player {
         return this.cardHolders.map((cardHolderElement) => this.removeCard(cardHolderElement));
     }
 
+    resetWinner() {
+        this.playerNameElement.textContent = this.name;
+        this.playerNameElement.classList.remove('winner');
+        this.playerHandElement.classList.remove('winner');
+    }
+
+    setWinner() {
+        this.playerNameElement.textContent = this.name + ' wins!';
+        this.playerNameElement.classList.add('winner');
+        this.playerHandElement.classList.add('winner');
+    }
 }

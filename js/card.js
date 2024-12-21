@@ -1,8 +1,7 @@
 export const SUITES = ['Spade', 'Heart', 'Diamond', 'Club'];
 
 export class Card {
-    constructor(id, suit, value) {
-        this.id = id;
+    constructor(suit, value) {
         this.suit = suit;
         this.value = value;
     }

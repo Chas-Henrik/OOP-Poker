@@ -4,10 +4,9 @@ import { Card } from "./card.js";
 export class Deck {
     constructor() {
         this.deck = [];
-        let id = 0;
         for(let i=0; i<4; i++) {
             for(let j=2; j<15; j++) {
-                const card = new Card(id++, SUITES[i], j);
+                const card = new Card(SUITES[i], j);
                 this.deck.push(card);
             }
         }

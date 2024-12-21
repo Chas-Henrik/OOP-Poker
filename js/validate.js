@@ -10,20 +10,21 @@ export class Validate {
             const playerCardsSortedByValue = Validate.sortCardsByValue(playerCards);
             const playerHand = Validate.getHand(playerCardsSortedByValue);
             const playerTotal =  playerCardsSortedByValue.reduce((acc, card) => acc + card.value, 0);
-            this.playerStats.push({Name: player.getName(), Hand: playerHand, Cards: playerCardsSortedByValue, Total: playerTotal});
+            this.playerStats.push({name: player.getName(), hand: playerHand, cards: playerCardsSortedByValue, total: playerTotal, obj: player});
         });
     }
 
     static getHand(playerCards) {
-        const playerCardsSortedByValue = Validate.sortCardsByValue(playerCards);
         if(playerCards.length>=5) {
+            const playerCardsSortedByValue = Validate.sortCardsByValue(playerCards);
             for(let i=0; i<HANDS.length; i++) {
                 const hand = Validate.#matchHand(HANDS[i], playerCardsSortedByValue)
                 if(hand.length>0)
-                    return {HandIdx: i, Cards: hand};
+                    return {handIdx: i, cards: hand};
             }
+            return {handIdx: HANDS.length-1, cards: playerCardsSortedByValue};
         }
-        return {HandIdx: HANDS.length-1, Cards: playerCardsSortedByValue};
+        return {handIdx: HANDS.length-1, cards: playerCards};
     }
 
     static #matchHand(hand, cardsSortedByValue) {
@@ -150,57 +151,55 @@ export class Validate {
 
     printPlayerStats() {
         this.playerStats.forEach((playerStats) => {
-            console.log('Player : ', playerStats.Name);
-            console.log('Hand   : ', HANDS[playerStats.Hand.HandIdx]);
-            console.log('Cards  : ', playerStats.Cards);
-            // console.log('Total Value : ', playerStats.Total);
+            console.log('player : ', playerStats.name);
+            console.log('hand   : ', HANDS[playerStats.hand.handIdx]);
+            console.log('cards  : ', playerStats.cards);
             console.log('');
         })
     }
 
-    printWinner() {
+    getWinner() {
         const playerStats = [...this.playerStats];
         if(playerStats.length < 1) {
             console.error('Player stats is missing!');
             return;
         }
 
-        const winner = playerStats.reduce((acc, player) => this.#getWinner(acc, player), playerStats[0]);
-        console.log('Winner is : ', winner.Name);
+        return playerStats.reduce((acc, pStats) => this.#getWinner(acc, pStats), playerStats[0]).obj;
     }
 
-    #getWinner(player1, player2) {
+    #getWinner(playerStats1, playerStats2) {
         //Get winner by hand
-        if(player1.Hand.HandIdx < player2.Hand.HandIdx)
-            return player1;
-        else if(player1.Hand.HandIdx > player2.Hand.HandIdx)
-            return player2;
+        if(playerStats1.hand.handIdx < playerStats2.hand.handIdx)
+            return playerStats1;
+        else if(playerStats1.hand.handIdx > playerStats2.hand.handIdx)
+            return playerStats2;
         else {
             //Resolve tie by checking card Value & Suit
-            return this.#resolveTie(player1, player2);
+            return this.#resolveTie(playerStats1, playerStats2);
         }
     }
 
-    #resolveTie(player1, player2) {
+    #resolveTie(playerStats1, playerStats2) {
         // Resolve tie by highest card Value
-        for(let i=0; i<player1.Hand.Cards.length; i++) {
-            if(player1.Hand.Cards[i].value === player2.Hand.Cards[i].value)
+        for(let i=0; i<playerStats1.hand.cards.length; i++) {
+            if(playerStats1.hand.cards[i].value === playerStats2.hand.cards[i].value)
                 continue;
-            else if(player1.Hand.Cards[i].value > player2.Hand.Cards[i].value) {
-                return player1;
+            else if(playerStats1.hand.cards[i].value > playerStats2.hand.cards[i].value) {
+                return playerStats1;
             } 
             else {
-                return player2;
+                return playerStats2;
             }
         }
 
         // Resolve tie by Suit
-        for(let i=0; i<player1.Hand.Cards.length; i++) {
-            if(SUITES.indexOf(player1.Hand.Cards[i].suit) < SUITES.indexOf(player2.Hand.Cards[i].suit)) {
-                return player1;
+        for(let i=0; i<playerStats1.hand.cards.length; i++) {
+            if(SUITES.indexOf(playerStats1.hand.cards[i].suit) < SUITES.indexOf(playerStats2.hand.cards[i].suit)) {
+                return playerStats1;
             } 
             else {
-                return player2;
+                return playerStats2;
             }
         }
     }
