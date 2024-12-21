@@ -8,7 +8,9 @@ const VALUE_HTML = ['', '' , '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 
 const playerCollectionContainerElement = document.getElementById("player-collection-container-id");
 
 export class Player {
+    static players = [];
     constructor(name) {
+        Player.players.push(this);
         this.name = name;
         this.MAX_CARDS = 5;
         this.cardCount = 0;
@@ -21,7 +23,13 @@ export class Player {
     }
 
     static deletePlayers() {
+        Player.players.forEach((player) => player.deletePlayer());
         playerCollectionContainerElement.innerHTML = '';
+    }
+
+    deletePlayer() {
+        this.cardHolders.forEach((cardHolder) => cardHolder.removeEventListener("click", this.#flipCard));
+        this.playerContainerElement.innerHTML = '';
     }
 
     #createPlayerContainerElement(gameBoardElement, name) {
@@ -43,9 +51,7 @@ export class Player {
             playerCardContainerElement.appendChild(cardHolderElement);
 
             // Add event listener
-            cardHolderElement.addEventListener("click", (e) => {
-                this.#flipCard(e.currentTarget);
-            });
+            cardHolderElement.addEventListener("click", (e) => this.#flipCard(e));
         }
         return cardHolders;
     }
@@ -109,7 +115,8 @@ export class Player {
         return cardBackElement;
     }
 
-    #flipCard(cardHolder) {
+    #flipCard(e) {
+        const cardHolder = e.currentTarget;
         const frontUp = !(cardHolder.dataset.frontUp === 'true');
         const cardFront = cardHolder.querySelector('.card-front');
         const cardBack = cardHolder.querySelector('.card-back');
