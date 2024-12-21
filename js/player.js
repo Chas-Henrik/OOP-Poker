@@ -20,6 +20,10 @@ export class Player {
         this.cardHolders = this.#createCardHolderElements(this.playerCardContainerElement);
     }
 
+    static deletePlayers() {
+        playerCollectionContainerElement.innerHTML = '';
+    }
+
     #createPlayerContainerElement(gameBoardElement, name) {
         const playerContainerElement = document.createElement("div");
         playerContainerElement.className = "player-container";

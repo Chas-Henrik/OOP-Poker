@@ -213,15 +213,31 @@ main {
     position: fixed;
     bottom: 0;
     background: linear-gradient(rgb(131, 97, 97) 0%, rgb(109, 29, 29) 15%, rgb(109, 29, 29) 100%);
+    display: grid;
+    grid-template-columns: 10rem 1fr 10rem;
+    justify-items: center;
+    align-items: center;
+}
+
+.footer-settings {
+    min-width: 5rem;
+    aspect-ratio: 1 / 1;
+    color: white;
+    cursor: pointer;
     display: flex;
     justify-content: center;
+    align-items: center;
+}
+
+.footer-button-menu {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     column-gap: 3rem;
 }
 
 .footer-buttons {
     width: 15rem;
-    margin-top: 1.5rem;
-    padding: 0 1rem;
     height: 8rem;
     font-family: "Poppins", serif;
     letter-spacing: 0.2rem;

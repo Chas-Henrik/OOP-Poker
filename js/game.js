@@ -6,6 +6,7 @@ const playerDialog = document.getElementById("player-dialog-id");
 const playerDialogCountFieldset = document.getElementById("player-dialog-fieldset-id");
 const playerDialogNameContainerElement = document.getElementById("player-dialog-name-container-id");
 const playerDialogOkBtn = document.getElementById("player-dialog-ok-btn-id");
+const settingsImg = document.getElementById("footer-settings-id");
 const dealBtn = document.getElementById("deal-button-id");
 const drawBtn = document.getElementById("draw-button-id");
 
@@ -15,23 +16,49 @@ export class Game {
         this.players = [];
         this.winner = null;
         this.gameState = 'start';
-        playerDialog.showModal();
-        playerDialog.classList.toggle("collapsed");
-        this.#updatePlayerInputElements(2);
-        playerDialogCountFieldset.addEventListener('click', (e) => this.#updatePlayerInputElements(parseInt(e.target.dataset.id)));
+
+        playerDialogCountFieldset.addEventListener('click', (e) => this.#updatePlayerInputElements(parseInt(e.target.dataset.input_fields)));
         playerDialogOkBtn.addEventListener('click', (e) => {
             this.#createPlayers();
             playerDialog.close();
             playerDialog.classList.toggle("collapsed");
-            this.gameState = 'deal';
+            this.#setGameState('deal');
         });
 
+        this.#settingsDialog();
+
+        settingsImg.addEventListener('click', (e) => this.#settingsDialog());
         dealBtn.addEventListener('click', (e) => this.dealCards());
         drawBtn.addEventListener('click', (e) => this.drawCards());
     }
 
+    #setGameState(state) {
+        switch(state){
+            case 'deal':
+                dealBtn.classList.remove("footer-button-disable");
+                drawBtn.classList.add("footer-button-disable");
+                this.gameState = 'deal';
+            break;
+            case 'draw':
+                drawBtn.classList.remove("footer-button-disable");
+                dealBtn.classList.add("footer-button-disable");
+                this.gameState = 'draw';
+            break;   
+        }
+    }
+
+    #settingsDialog() {
+        playerDialog.showModal();
+        playerDialog.classList.toggle("collapsed");
+        this.#updatePlayerInputElements(parseInt(playerDialog.dataset.player_cnt));
+    }
+
     #createPlayers() {
         const inputElements = playerDialogNameContainerElement.querySelectorAll("input");
+        Player.deletePlayers();
+        delete this.players;
+        this.players = [];
+        this.players.length = 0;
         for(const inputElement of inputElements){
             const player = new Player(inputElement.value);
             this.players.push(player);
@@ -57,6 +84,7 @@ export class Game {
                 playerDialogNameContainerElement.removeChild(playerDialogNameContainerElement.lastChild);
             }
         }
+        playerDialog.dataset.player_cnt = playerCnt;
     }
 
     dealCards() {
@@ -67,22 +95,18 @@ export class Game {
             }
             this.players.forEach((player) => player.removeCards());
             this.dealer.deal(5, ...this.players);
-            drawBtn.classList.remove("footer-button-disable");
-            dealBtn.classList.add("footer-button-disable");
-            this.gameState = 'draw';
+            this.#setGameState('draw');
         }
     }
 
     drawCards() {
         if(this.gameState === 'draw')  {
             this.players.forEach((player) => this.dealer.replace(player.getCardHolderRequests(), player));
-            dealBtn.classList.remove("footer-button-disable");
-            drawBtn.classList.add("footer-button-disable");
             const validate = new Validate(this.players);
             this.winner = validate.getWinner();
             this.winner.setWinner();
             this.dealer.newDeck();
-            this.gameState = 'deal';
+            this.#setGameState('deal');
         }
     }
 }

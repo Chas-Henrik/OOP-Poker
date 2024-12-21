@@ -16,14 +16,14 @@
     </head>
     <body class="board">
         <main>
-            <dialog id="player-dialog-id" class="player-dialog collapsed">
+            <dialog id="player-dialog-id" class="player-dialog collapsed" data-player_cnt="2">
                 <h2>Enter Player Names</h2>
                 <fieldset id="player-dialog-fieldset-id">
                     <legend>Select number of Players</legend>
-                    <button type="button" data-id="2" class="player-dialog-cnt-btn">2</button>
-                    <button type="button" data-id="3" class="player-dialog-cnt-btn">3</button>
-                    <button type="button" data-id="4" class="player-dialog-cnt-btn">4</button>
-                    <button type="button" data-id="5" class="player-dialog-cnt-btn">5</button>
+                    <button type="button" data-input_fields="2" class="player-dialog-cnt-btn">2</button>
+                    <button type="button" data-input_fields="3" class="player-dialog-cnt-btn">3</button>
+                    <button type="button" data-input_fields="4" class="player-dialog-cnt-btn">4</button>
+                    <button type="button" data-input_fields="5" class="player-dialog-cnt-btn">5</button>
                 </fieldset>
                 <fieldset>
                     <legend>Player Name</legend>
@@ -35,8 +35,11 @@
         </main>
         <div class="footer-margin"></div>
         <footer class="footer">
-            <button id="deal-button-id" class="footer-buttons">DEAL</button>
-            <button id="draw-button-id" class="footer-buttons footer-button-disable">DRAW</button>
+            <img src="./svg/settings.svg" alt="Settings" id="footer-settings-id" class="footer-settings">  
+            <div class="footer-button-menu">
+                <button id="deal-button-id" class="footer-buttons">DEAL</button>
+                <button id="draw-button-id" class="footer-buttons footer-button-disable">DRAW</button>
+            </div>   
         </footer>
     </body>
 </html>
