@@ -22,9 +22,8 @@ main {
 }
 
 body {
-    min-width: 320px;
+    min-width: 375px;
     height: 100svh;
-    overflow-x: hidden;
     background-color: green;
 }
 
@@ -95,7 +94,6 @@ body {
     flex-wrap: wrap;
     column-gap: 5rem;
     row-gap: 2rem;
-    overflow-x: hidden;
 }
 
 .player-container {
