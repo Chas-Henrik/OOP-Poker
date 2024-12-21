@@ -22,7 +22,6 @@ main {
 }
 
 body {
-    min-width: 375px;
     height: 100svh;
     background-color: green;
 }
