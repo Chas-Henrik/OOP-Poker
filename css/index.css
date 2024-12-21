@@ -14,11 +14,15 @@
 html {
     font-family: serif;
     font-weight: 600;
-    font-size: calc(62.5% / 1.5);
+    font-size: calc(62.5% / 1.75);
 }
 
 main {
     padding: 2rem;
+}
+
+body {
+    overflow-x: hidden;
 }
 
 .player-dialog {
