@@ -19,9 +19,7 @@ export class Dealer {
     }
 
     replace(cardHolders, player) {
-        const replacedCards = [];
-        cardHolders.forEach((cardHolder) => replacedCards.push(player.replaceCardHolder(cardHolder, this.deck.removeCard())));
-        return replacedCards;
+        cardHolders.forEach((cardHolder) => player.replaceCardHolder(cardHolder, this.deck.removeCard()));
     }
 
 }

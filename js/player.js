@@ -62,14 +62,12 @@ export class Player {
 
     replaceCardHolder(cardHolderElement, card) {
         const frontUp = true;
-        const oldCard = this.removeCard(cardHolderElement);
+        this.removeCard(cardHolderElement);
 
         this.addCardToCardHolder(cardHolderElement, card, frontUp);
 
         // Update Hand info
         this.#updateHandInfo();
-
-        return oldCard;
     }
 
     getCardHolderRequests() {

@@ -1,4 +1,3 @@
-import { Pile } from "./pile.js";
 import { Dealer } from "./dealer.js";
 import { Player } from "./player.js"
 import { Validate } from "./validate.js"
@@ -15,7 +14,6 @@ export class Game {
         this.dealer = new Dealer();
         this.players = [];
         this.winner = null;
-        this.pile = new Pile();
         this.gameState = 'start';
         playerDialog.showModal();
         playerDialog.classList.toggle("collapsed");
@@ -77,7 +75,7 @@ export class Game {
 
     drawCards() {
         if(this.gameState === 'draw')  {
-            this.players.forEach((player) => this.pile.addCards(this.dealer.replace(player.getCardHolderRequests(), player)));
+            this.players.forEach((player) => this.dealer.replace(player.getCardHolderRequests(), player));
             dealBtn.classList.remove("footer-button-disable");
             drawBtn.classList.add("footer-button-disable");
             const validate = new Validate(this.players);
