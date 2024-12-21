@@ -20,6 +20,7 @@ html {
 body {
     height: 100svh;
     background-color: green;
+    overflow-x: scroll;
 }
 
 main {
