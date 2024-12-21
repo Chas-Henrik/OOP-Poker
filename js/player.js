@@ -11,6 +11,7 @@ export class Player {
         this.name = name;
         this.MAX_CARDS = 5;
         this.cardCount = 0;
+        this.flipEnabled = false;
         this.playerContainerElement = this.#createPlayerContainerElement(playerCollectionContainerElement);
         this.playerContainerElement.innerHTML = `<p class="player-hand"></p><div class="player-card-container"></div><p class="player-name">${name}</p>`;
         this.playerHandElement = this.playerContainerElement.querySelector(".player-hand");
@@ -41,8 +42,7 @@ export class Player {
         //Create Card Holders
         for(let i=0; i<this.MAX_CARDS; i++) {
             const cardHolderElement = document.createElement('div');
-            cardHolderElement.title = "Click to flip card";
-            cardHolderElement.className = "card-holder";
+            cardHolderElement.classList.add("card-holder");
             cardHolders.push(cardHolderElement);
             // Attach card holder to DOM
             playerCardContainerElement.appendChild(cardHolderElement);
@@ -51,6 +51,24 @@ export class Player {
             cardHolderElement.addEventListener("click", (e) => this.#flipCard(e));
         }
         return cardHolders;
+    }
+
+    enableFlipCard() {
+        this.flipEnabled = true;
+        const cardHolderElements = this.playerCardContainerElement.querySelectorAll(".card-holder");
+        for(const cardHolderElement of cardHolderElements) {
+            cardHolderElement.title = "Click to flip card";
+            cardHolderElement.classList.add("card-holder-flip");
+        }
+    }
+
+    disableFlipCard() {
+        this.flipEnabled = false;
+        const cardHolderElements = this.playerCardContainerElement.querySelectorAll(".card-holder");
+        for(const cardHolderElement of cardHolderElements) {
+            cardHolderElement.title = "";
+            cardHolderElement.classList.remove("card-holder-flip");
+        }
     }
 
     addCard(card, frontUp = true) {
@@ -108,21 +126,23 @@ export class Player {
     }
 
     #flipCard(e) {
-        const cardHolder = e.currentTarget;
-        const frontUp = !(cardHolder.dataset.frontUp === 'true');
-        const cardFront = cardHolder.querySelector('.card-front');
-        const cardBack = cardHolder.querySelector('.card-back');
-
-        if(cardFront === null || cardBack === null)
-            return;
-
-        cardHolder.dataset.frontUp = frontUp;
-        if(frontUp) {
-            cardBack.classList.add("collapsed");
-            cardFront.classList.remove("collapsed");
-        } else {
-            cardFront.classList.add("collapsed");
-            cardBack.classList.remove("collapsed");
+        if(this.flipEnabled) {
+            const cardHolder = e.currentTarget;
+            const frontUp = !(cardHolder.dataset.frontUp === 'true');
+            const cardFront = cardHolder.querySelector('.card-front');
+            const cardBack = cardHolder.querySelector('.card-back');
+    
+            if(cardFront === null || cardBack === null)
+                return;
+    
+            cardHolder.dataset.frontUp = frontUp;
+            if(frontUp) {
+                cardBack.classList.add("collapsed");
+                cardFront.classList.remove("collapsed");
+            } else {
+                cardFront.classList.add("collapsed");
+                cardBack.classList.remove("collapsed");
+            }
         }
     }
 

@@ -144,7 +144,7 @@ body {
     aspect-ratio: 10 / 14.2;
 }
 
-.card-holder:hover {
+.card-holder-flip:hover {
     cursor: alias;
 }
 

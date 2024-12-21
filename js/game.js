@@ -37,11 +37,13 @@ export class Game {
             case 'deal':
                 dealBtn.classList.remove("footer-button-disable");
                 drawBtn.classList.add("footer-button-disable");
+                this.players.forEach((player) => player.disableFlipCard());
                 this.gameState = 'deal';
             break;
             case 'draw':
                 drawBtn.classList.remove("footer-button-disable");
                 dealBtn.classList.add("footer-button-disable");
+                this.players.forEach((player) => player.enableFlipCard());
                 this.gameState = 'draw';
             break;   
         }
