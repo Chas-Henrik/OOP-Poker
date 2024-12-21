@@ -1,8 +1,5 @@
-import { SUITES } from "./card.js";
 import { Validate, HANDS } from "./validate.js"
 
-const SUITE_HTML = ['&spades;', '&hearts;', '&diams;', '&clubs;'];
-const SUITE_COLOR_HTML = ['black', 'red', 'red', 'black'];
 const VALUE_HTML = ['', '' , '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
 
 const playerCollectionContainerElement = document.getElementById("player-collection-container-id");
@@ -85,17 +82,12 @@ export class Player {
     }
 
     #createCardFrontElement(card, frontUp) {
-        const suitIndex = SUITES.indexOf(card.suit);
-        const suitHTML = SUITE_HTML[suitIndex];
-        const suitColorHTML = SUITE_COLOR_HTML[suitIndex];
         const valueHTML = VALUE_HTML[card.value];
 
         const cardFrontElement = document.createElement('div');
-        cardFrontElement.className = "card-front " + suitColorHTML;        
+        cardFrontElement.className = "card-front-holder";
         cardFrontElement.innerHTML = `
-            <aside class="top"><p class="value">${valueHTML}</p><p class="suit">${suitHTML}</p></aside>
-            <p class="center suit">${suitHTML}</p>
-            <aside class="bottom"><p class="suit mirror-flip">${suitHTML}</p><p class="value mirror-flip">${valueHTML}</p></aside>
+            <img type="img" src="./cards/${valueHTML}${card.suit}.svg" alt="Card Front" class="card-front">
             `
         if(!frontUp)
             cardFrontElement.classList.add("collapsed");

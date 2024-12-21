@@ -1,4 +1,4 @@
-export const SUITES = ['Spade', 'Heart', 'Diamond', 'Club'];
+export const SUITES = ['S', 'H', 'D', 'C'];
 
 export class Card {
     constructor(suit, value) {

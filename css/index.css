@@ -146,23 +146,28 @@ main {
     cursor: alias;
 }
 
-.card-front {
-    min-width: 10rem;
-    width: 10rem;
-    aspect-ratio: 10 / 14.2;
-    padding: 0.5rem;
-    background-color: white;
+.card-front-holder {
+    max-width: 10rem;
+    max-height: 14rem;
     border-radius: 5px;
-    display: grid;
-    grid-template-columns: 2rem 1fr 2rem;
-    font-size: 1.8rem;
+    overflow: hidden;
+}
+
+.card-front {
+    margin-top: -16rem;
+    margin-left: -11.4rem;
+    width: 32.5rem;
+    aspect-ratio: 10 / 14;
+    object-fit: cover;
+    border-radius: 5px;
 }
 
 .card-back {
-    min-width: 10rem;
-    width: 10rem;
+    min-width: 9.8rem;
+    width: 9.8rem;
     aspect-ratio: 10 / 14;
     object-fit: scale-down;
+    border-radius: 5px;
 }
 
 .top {
