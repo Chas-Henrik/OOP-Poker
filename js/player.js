@@ -107,9 +107,6 @@ export default class Player {
         cardFrontElement.innerHTML = `
             <img type="img" src="./cards/${valueHTML}${card.suit}.svg" alt="Card Front" class="card-front-image">
             `
-        if(!frontUp)
-            cardFrontElement.classList.add("collapsed");
-
         return cardFrontElement;
     }
 
@@ -119,9 +116,6 @@ export default class Player {
         cardBackElement.innerHTML = `
             <img type="img" src="./svg/card-back.svg" alt="Card Back" class="card-back-image">
             `
-        if(frontUp) 
-            cardBackElement.classList.add("collapsed");
-
         return cardBackElement;
     }
 
@@ -136,13 +130,7 @@ export default class Player {
                 return;
     
             cardContainer.dataset.frontUp = frontUp;
-            if(frontUp) {
-                cardBack.classList.add("collapsed");
-                cardFront.classList.remove("collapsed");
-            } else {
-                cardFront.classList.add("collapsed");
-                cardBack.classList.remove("collapsed");
-            }
+            cardContainer.classList.toggle('is-flipped');
         }
     }
 
@@ -175,6 +163,7 @@ export default class Player {
         // Update Card Container
         cardContainerElement.dataset.frontUp = frontUp;
         cardContainerElement.dataset.card = JSON.stringify(card);
+        cardContainerElement.classList.remove('is-flipped');
         
         // Attach card to card container
         cardContainerElement.appendChild(cardFrontElement);
