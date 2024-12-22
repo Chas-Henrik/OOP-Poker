@@ -4,7 +4,7 @@ const VALUE_HTML = ['', '' , '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 
 
 const playerCollectionContainerElement = document.getElementById("player-collection-container-id");
 
-export class Player {
+export default class Player {
     static players = [];
     constructor(name) {
         Player.players.push(this);

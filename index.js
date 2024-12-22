@@ -1,5 +1,5 @@
 
-import { Game } from "./js/game.js";
+import Game from "./js/game.js";
 
 const playerDialog = document.getElementById("player-dialog-id");
 

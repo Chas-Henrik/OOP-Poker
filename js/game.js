@@ -1,5 +1,5 @@
-import { Dealer } from "./dealer.js";
-import { Player } from "./player.js"
+import Dealer from "./dealer.js";
+import Player from "./player.js"
 import { Validate } from "./validate.js"
 
 const playerDialog = document.getElementById("player-dialog-id");
@@ -10,7 +10,7 @@ const settingsImg = document.getElementById("footer-settings-id");
 const dealBtn = document.getElementById("deal-button-id");
 const drawBtn = document.getElementById("draw-button-id");
 
-export class Game {
+export default class Game {
     constructor() {
         this.dealer = new Dealer();
         this.players = [];

@@ -1,7 +1,7 @@
 
-import { Deck } from "./deck.js";
+import Deck from "./deck.js";
 
-export class Dealer {
+export default class Dealer {
     constructor() {
         this.deck = new Deck();
         this.deck.shuffle();

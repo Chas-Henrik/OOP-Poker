@@ -1,7 +1,6 @@
-import { SUITES } from "./card.js";
-import { Card } from "./card.js";
+import { Card, SUITES } from "./card.js";
 
-export class Deck {
+export default class Deck {
     constructor() {
         this.deck = [];
         for(let i=0; i<4; i++) {
