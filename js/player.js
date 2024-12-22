@@ -121,16 +121,16 @@ export default class Player {
 
     #flipCard(e) {
         if(this.flipEnabled) {
-            const cardContainer = e.currentTarget;
-            const frontUp = !(cardContainer.dataset.frontUp === 'true');
-            const cardFront = cardContainer.querySelector('.card-front-frame');
-            const cardBack = cardContainer.querySelector('.card-back-frame');
+            const cardContainerElement = e.currentTarget;
+            const frontUp = (cardContainerElement.dataset.frontUp === 'true');
+            const cardFront = cardContainerElement.querySelector('.card-front-frame');
+            const cardBack = cardContainerElement.querySelector('.card-back-frame');
     
             if(cardFront === null || cardBack === null)
                 return;
     
-            cardContainer.dataset.frontUp = frontUp;
-            cardContainer.classList.toggle('is-flipped');
+            cardContainerElement.dataset.frontUp = !frontUp;
+            cardContainerElement.classList.toggle('is-flipped');
         }
     }
 
@@ -140,7 +140,7 @@ export default class Player {
     }
 
     getCards() {
-        return this.cardContainers.reduce((acc, cardContainer) => (cardContainer.dataset.card !== undefined) ? [...acc,  JSON.parse(cardContainer.dataset.card)] : acc, []);
+        return this.cardContainers.reduce((acc, cardContainerElement) => (cardContainerElement.dataset.card !== undefined) ? [...acc,  JSON.parse(cardContainerElement.dataset.card)] : acc, []);
     }
 
     getName() {
@@ -164,7 +164,7 @@ export default class Player {
         cardContainerElement.dataset.frontUp = frontUp;
         cardContainerElement.dataset.card = JSON.stringify(card);
         cardContainerElement.classList.remove('is-flipped');
-        
+    
         // Attach card to card container
         cardContainerElement.appendChild(cardFrontElement);
         cardContainerElement.appendChild(cardBackElement);
