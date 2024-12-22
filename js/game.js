@@ -103,7 +103,7 @@ export class Game {
 
     drawCards() {
         if(this.gameState === 'draw')  {
-            this.players.forEach((player) => this.dealer.replace(player.getCardHolderRequests(), player));
+            this.players.forEach((player) => this.dealer.replace(player.getCardContainerFrontDown(), player));
             const validate = new Validate(this.players);
             this.winner = validate.getWinner();
             this.winner.setWinner();

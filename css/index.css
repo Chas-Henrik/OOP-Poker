@@ -100,19 +100,6 @@ main {
     width: fit-content;
 }
 
-.player-card-container {
-    margin: 1rem;
-    padding: 1rem;
-    min-height: 17.2rem;
-    min-width: 58rem;
-    width: fit-content;
-    display: flex;
-    justify-content: space-around;
-    column-gap: 1rem;
-    border: 5px solid rgb(128, 190, 35);
-    border-radius: 10px;
-}
-
 .player-name, .player-hand {
     min-height: 4.2rem;
     margin: 1.5rem;
@@ -136,24 +123,37 @@ main {
     color: yellow;
 }
 
-.card-holder {
+.player-card-collection-container {
+    margin: 1rem;
+    padding: 1rem;
+    min-height: 17.2rem;
+    min-width: 58rem;
+    width: fit-content;
+    display: flex;
+    justify-content: space-around;
+    column-gap: 1rem;
+    border: 5px solid rgb(128, 190, 35);
+    border-radius: 10px;
+}
+
+.card-container {
     min-width: 10rem;
     width: 10rem;
     aspect-ratio: 10 / 14.2;
 }
 
-.card-holder-flip:hover {
+.card-container-flip:hover {
     cursor: alias;
 }
 
-.card-front-holder {
+.card-front-frame {
     max-width: 10rem;
     max-height: 14rem;
     border-radius: 5px;
     overflow: hidden;
 }
 
-.card-front {
+.card-front-image {
     margin-top: -16rem;
     margin-left: -11.4rem;
     width: 32.5rem;
@@ -162,7 +162,7 @@ main {
     border-radius: 5px;
 }
 
-.card-back {
+.card-back-frame {
     min-width: 9.8rem;
     width: 9.8rem;
     aspect-ratio: 10 / 14;
@@ -170,41 +170,12 @@ main {
     border-radius: 5px;
 }
 
-.top {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-}
-
-.center {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-size: 3.5rem;
-}
-
-.bottom {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: center;
-}
-
-.mirror-flip {
-    transform: rotate(180deg);
-}
-
-.red {
-    color: red;
-}
-
-.black {
-    color: black;
+.card-back-image {
+    min-width: 9.8rem;
+    width: 9.8rem;
+    aspect-ratio: 10 / 14;
+    object-fit: scale-down;
+    border-radius: 5px;
 }
 
 .footer-margin {

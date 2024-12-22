@@ -18,8 +18,8 @@ export class Dealer {
         }
     }
 
-    replace(cardHolders, player) {
-        cardHolders.forEach((cardHolder) => player.replaceCardHolder(cardHolder, this.deck.removeCard()));
+    replace(cardContainers, player) {
+        cardContainers.forEach((cardContainer) => player.replaceCardContainer(cardContainer, this.deck.removeCard()));
     }
 
 }

@@ -13,11 +13,11 @@ export class Player {
         this.cardCount = 0;
         this.flipEnabled = false;
         this.playerContainerElement = this.#createPlayerContainerElement(playerCollectionContainerElement);
-        this.playerContainerElement.innerHTML = `<p class="player-hand"></p><div class="player-card-container"></div><p class="player-name">${name}</p>`;
+        this.playerContainerElement.innerHTML = `<p class="player-hand"></p><div class="player-card-collection-container"></div><p class="player-name">${name}</p>`;
         this.playerHandElement = this.playerContainerElement.querySelector(".player-hand");
-        this.playerCardContainerElement = this.playerContainerElement.querySelector(".player-card-container");
+        this.playerCardCollectionContainerElement = this.playerContainerElement.querySelector(".player-card-collection-container");
         this.playerNameElement = this.playerContainerElement.querySelector(".player-name");
-        this.cardHolders = this.#createCardHolderElements(this.playerCardContainerElement);
+        this.cardContainers = this.#createCardContainer(this.playerCardCollectionContainerElement);
     }
 
     static deletePlayers() {
@@ -26,7 +26,7 @@ export class Player {
     }
 
     deletePlayer() {
-        this.cardHolders.forEach((cardHolder) => cardHolder.removeEventListener("click", this.#flipCard));
+        this.cardContainers.forEach((cardContainer) => cardContainer.removeEventListener("click", this.#flipCard));
         this.playerContainerElement.innerHTML = '';
     }
 
@@ -37,37 +37,37 @@ export class Player {
         return playerContainerElement;
     }
 
-    #createCardHolderElements(playerCardContainerElement){
-        const cardHolders = [];
+    #createCardContainer(cardContainerCollectionElement){
+        const cardContainers = [];
         //Create Card Holders
         for(let i=0; i<this.MAX_CARDS; i++) {
-            const cardHolderElement = document.createElement('div');
-            cardHolderElement.classList.add("card-holder");
-            cardHolders.push(cardHolderElement);
+            const cardContainerElement = document.createElement('div');
+            cardContainerElement.classList.add("card-container");
+            cardContainers.push(cardContainerElement);
             // Attach card holder to DOM
-            playerCardContainerElement.appendChild(cardHolderElement);
+            cardContainerCollectionElement.appendChild(cardContainerElement);
 
             // Add event listener
-            cardHolderElement.addEventListener("click", (e) => this.#flipCard(e));
+            cardContainerElement.addEventListener("click", (e) => this.#flipCard(e));
         }
-        return cardHolders;
+        return cardContainers;
     }
 
     enableFlipCard() {
         this.flipEnabled = true;
-        const cardHolderElements = this.playerCardContainerElement.querySelectorAll(".card-holder");
-        for(const cardHolderElement of cardHolderElements) {
-            cardHolderElement.title = "Click to flip card";
-            cardHolderElement.classList.add("card-holder-flip");
+        const cardContainerElements = this.playerCardCollectionContainerElement.querySelectorAll(".card-container");
+        for(const cardContainerElement of cardContainerElements) {
+            cardContainerElement.title = "Click to flip card";
+            cardContainerElement.classList.add("card-container-flip");
         }
     }
 
     disableFlipCard() {
         this.flipEnabled = false;
-        const cardHolderElements = this.playerCardContainerElement.querySelectorAll(".card-holder");
-        for(const cardHolderElement of cardHolderElements) {
-            cardHolderElement.title = "";
-            cardHolderElement.classList.remove("card-holder-flip");
+        const cardContainerElements = this.playerCardCollectionContainerElement.querySelectorAll(".card-container");
+        for(const cardContainerElement of cardContainerElements) {
+            cardContainerElement.title = "";
+            cardContainerElement.classList.remove("card-container-flip");
         }
     }
 
@@ -77,35 +77,35 @@ export class Player {
             return;
         }
 
-        const cardHolderElement = this.cardHolders[this.cardCount];
+        const cardContainerElement = this.cardContainers[this.cardCount];
 
-        this.addCardToCardHolder(cardHolderElement, card, frontUp);
+        this.addCardToCardContainer(cardContainerElement, card, frontUp);
 
         // Update Hand info
         this.#updateHandInfo();
     }
 
-    replaceCardHolder(cardHolderElement, card) {
+    replaceCardContainer(cardContainerElement, card) {
         const frontUp = true;
-        this.removeCard(cardHolderElement);
+        this.removeCard(cardContainerElement);
 
-        this.addCardToCardHolder(cardHolderElement, card, frontUp);
+        this.addCardToCardContainer(cardContainerElement, card, frontUp);
 
         // Update Hand info
         this.#updateHandInfo();
     }
 
-    getCardHolderRequests() {
-        return this.cardHolders.filter((item) => item.dataset.frontUp === "false");
+    getCardContainerFrontDown() {
+        return this.cardContainers.filter((item) => item.dataset.frontUp === "false");
     }
 
     #createCardFrontElement(card, frontUp) {
         const valueHTML = VALUE_HTML[card.value];
 
         const cardFrontElement = document.createElement('div');
-        cardFrontElement.className = "card-front-holder";
+        cardFrontElement.className = "card-front-frame";
         cardFrontElement.innerHTML = `
-            <img type="img" src="./cards/${valueHTML}${card.suit}.svg" alt="Card Front" class="card-front">
+            <img type="img" src="./cards/${valueHTML}${card.suit}.svg" alt="Card Front" class="card-front-image">
             `
         if(!frontUp)
             cardFrontElement.classList.add("collapsed");
@@ -115,9 +115,9 @@ export class Player {
 
     #createCardBackElement(frontUp) {
         const cardBackElement = document.createElement('div');
-        cardBackElement.className = "card-back";
+        cardBackElement.className = "card-back-frame";
         cardBackElement.innerHTML = `
-            <img type="img" src="./svg/card-back.svg" alt="Card Back" class="card-back">
+            <img type="img" src="./svg/card-back.svg" alt="Card Back" class="card-back-image">
             `
         if(frontUp) 
             cardBackElement.classList.add("collapsed");
@@ -127,15 +127,15 @@ export class Player {
 
     #flipCard(e) {
         if(this.flipEnabled) {
-            const cardHolder = e.currentTarget;
-            const frontUp = !(cardHolder.dataset.frontUp === 'true');
-            const cardFront = cardHolder.querySelector('.card-front');
-            const cardBack = cardHolder.querySelector('.card-back');
+            const cardContainer = e.currentTarget;
+            const frontUp = !(cardContainer.dataset.frontUp === 'true');
+            const cardFront = cardContainer.querySelector('.card-front-frame');
+            const cardBack = cardContainer.querySelector('.card-back-frame');
     
             if(cardFront === null || cardBack === null)
                 return;
     
-            cardHolder.dataset.frontUp = frontUp;
+            cardContainer.dataset.frontUp = frontUp;
             if(frontUp) {
                 cardBack.classList.add("collapsed");
                 cardFront.classList.remove("collapsed");
@@ -152,7 +152,7 @@ export class Player {
     }
 
     getCards() {
-        return this.cardHolders.reduce((acc, cardHolder) => (cardHolder.dataset.card !== undefined) ? [...acc,  JSON.parse(cardHolder.dataset.card)] : acc, []);
+        return this.cardContainers.reduce((acc, cardContainer) => (cardContainer.dataset.card !== undefined) ? [...acc,  JSON.parse(cardContainer.dataset.card)] : acc, []);
     }
 
     getName() {
@@ -167,29 +167,29 @@ export class Player {
         cards.forEach((card) => this.addCard(card));
     }
 
-    addCardToCardHolder(cardHolderElement, card, frontUp) {
+    addCardToCardContainer(cardContainerElement, card, frontUp) {
         // Create new Card
         const cardFrontElement = this.#createCardFrontElement(card, frontUp);
         const cardBackElement = this.#createCardBackElement(frontUp);
         
-        // Update Card Holder
-        cardHolderElement.dataset.frontUp = frontUp;
-        cardHolderElement.dataset.card = JSON.stringify(card);
+        // Update Card Container
+        cardContainerElement.dataset.frontUp = frontUp;
+        cardContainerElement.dataset.card = JSON.stringify(card);
         
-        // Attach card to card holder
-        cardHolderElement.appendChild(cardFrontElement);
-        cardHolderElement.appendChild(cardBackElement);
+        // Attach card to card container
+        cardContainerElement.appendChild(cardFrontElement);
+        cardContainerElement.appendChild(cardBackElement);
 
         this.cardCount++;
     }
 
-    removeCard(cardHolderElement) {
-        if(cardHolderElement.dataset.card !== undefined) {
-            const removedCard = JSON.parse(cardHolderElement.dataset.card);
-            delete cardHolderElement.dataset.card;
+    removeCard(cardContainerElement) {
+        if(cardContainerElement.dataset.card !== undefined) {
+            const removedCard = JSON.parse(cardContainerElement.dataset.card);
+            delete cardContainerElement.dataset.card;
             this.cardCount--;
-            // Empty Card Holder
-            cardHolderElement.innerHTML = "";
+            // Empty Card Container
+            cardContainerElement.innerHTML = "";
 
 
             return removedCard;
@@ -197,7 +197,7 @@ export class Player {
     }
 
     removeCards() {
-        return this.cardHolders.map((cardHolderElement) => this.removeCard(cardHolderElement));
+        return this.cardContainers.map((cardContainerElement) => this.removeCard(cardContainerElement));
     }
 
     resetWinner() {
