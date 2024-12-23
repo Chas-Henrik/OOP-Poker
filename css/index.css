@@ -174,7 +174,7 @@ main {
     justify-content: space-around;
     align-items: center;
     flex-wrap: wrap;
-    gap: 1.5rem;
+    gap: 1.3rem;
     border: 5px solid rgb(128, 190, 35);
     border-radius: 10px;
     perspective: 60rem;
