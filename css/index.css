@@ -174,7 +174,7 @@ main {
     justify-content: space-around;
     align-items: center;
     flex-wrap: wrap;
-    gap: 1.4rem;
+    gap: 1.5rem;
     border: 5px solid rgb(128, 190, 35);
     border-radius: 10px;
     perspective: 60rem;
@@ -192,7 +192,7 @@ main {
 }
 
 .card-container-outline-red {
-    outline: 4px solid orange;
+    outline: 0.5rem solid orange;
 }
 
 .card-container-flip:hover {
