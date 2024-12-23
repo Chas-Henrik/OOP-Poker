@@ -95,6 +95,7 @@ export default class Game {
                 this.winner.resetWinner();
                 this.winner = null;
             }
+            this.players.forEach((player) => player.resetHand());
             this.players.forEach((player) => player.removeCards());
             this.dealer.deal(5, ...this.players);
             this.#setGameState('draw');
@@ -105,6 +106,7 @@ export default class Game {
         if(this.gameState === 'draw')  {
             this.players.forEach((player) => this.dealer.replace(player.getCardContainerFrontDown(), player));
             const validate = new Validate(this.players);
+            this.players.forEach((player) => player.setHand(validate.getPlayerHand(player)));
             this.winner = validate.getWinner();
             this.winner.setWinner();
             this.dealer.newDeck();

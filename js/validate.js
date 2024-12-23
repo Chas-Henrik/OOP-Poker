@@ -46,7 +46,7 @@ export class Validate {
             case 'One pair':
                 return Validate.#matchOnePair(cardsSortedByValue);
             default:
-                return cardsSortedByValue;
+                return [cardsSortedByValue[0]];
         }
     }
 
@@ -156,6 +156,11 @@ export class Validate {
             console.log('cards  : ', playerStats.cards);
             console.log('');
         })
+    }
+
+    getPlayerHand(player) {
+        const playerStats = this.playerStats.filter((playerStats) => playerStats.name === player.getName())[0];
+        return playerStats.hand.cards;
     }
 
     getWinner() {

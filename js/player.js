@@ -103,7 +103,7 @@ export default class Player {
         const valueHTML = VALUE_HTML[card.value];
 
         const cardFrontElement = document.createElement('div');
-        cardFrontElement.className = "card-front-frame";
+        cardFrontElement.className = "card-front-frame box-shadow-thin";
         cardFrontElement.innerHTML = `
             <img type="img" src="./cards/${valueHTML}${card.suit}.svg" alt="Card Front" class="card-front-image">
             `
@@ -112,7 +112,7 @@ export default class Player {
 
     #createCardBackElement(frontUp) {
         const cardBackElement = document.createElement('div');
-        cardBackElement.className = "card-back-frame";
+        cardBackElement.className = "card-back-frame box-shadow-thin";
         cardBackElement.innerHTML = `
             <img type="img" src="./svg/card-back.svg" alt="Card Back" class="card-back-image">
             `
@@ -187,6 +187,28 @@ export default class Player {
 
     removeCards() {
         return this.cardContainers.map((cardContainerElement) => this.removeCard(cardContainerElement));
+    }
+
+    resetHand() {
+        this.cardContainers.forEach((cardContainer) => {
+            cardContainer.classList.remove("card-container-outline-red");
+            for(const child of cardContainer.children) {
+                child.classList.add("box-shadow-thin");
+            }
+        });
+    }
+
+    setHand(hand) {
+        for(const cardContainer of this.cardContainers)  {
+            const playerCard = JSON.parse(cardContainer.dataset.card);
+            if(hand.some((card) => playerCard.suit === card.suit  && playerCard.value === card.value)) {
+                cardContainer.classList.add("card-container-outline-red");
+                for(const child of cardContainer.children) {
+                    child.classList.remove("box-shadow-thin");
+                }
+            }
+                
+        }
     }
 
     resetWinner() {
