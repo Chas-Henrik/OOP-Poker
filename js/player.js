@@ -191,7 +191,7 @@ export default class Player {
 
     resetHand() {
         this.cardContainers.forEach((cardContainer) => {
-            cardContainer.classList.remove("card-container-outline-red");
+            cardContainer.classList.remove("card-container-outline-orange");
             for(const child of cardContainer.children) {
                 child.classList.add("box-shadow-thin");
             }
@@ -202,7 +202,7 @@ export default class Player {
         for(const cardContainer of this.cardContainers)  {
             const playerCard = JSON.parse(cardContainer.dataset.card);
             if(hand.some((card) => playerCard.suit === card.suit  && playerCard.value === card.value)) {
-                cardContainer.classList.add("card-container-outline-red");
+                cardContainer.classList.add("card-container-outline-orange");
                 for(const child of cardContainer.children) {
                     child.classList.remove("box-shadow-thin");
                 }

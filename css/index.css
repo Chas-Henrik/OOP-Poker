@@ -191,7 +191,7 @@ main {
     transition: transform 0.5s;
 }
 
-.card-container-outline-red {
+.card-container-outline-orange {
     outline: 0.5rem solid orange;
 }
 
