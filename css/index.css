@@ -247,7 +247,7 @@ main {
     bottom: 0;
     background: linear-gradient(rgb(131, 97, 97) 0%, rgb(109, 29, 29) 15%, rgb(109, 29, 29) 100%);
     display: grid;
-    grid-template-columns: 10rem 1fr 10rem;
+    grid-template-columns: 7rem 1fr;
     justify-items: center;
     align-items: center;
 }
@@ -307,6 +307,10 @@ main {
 
     .player-card-collection-container {
         flex-wrap: no-wrap;
+    }
+
+    .footer {
+        grid-template-columns: 10rem 1fr 10rem;
     }
 
     .footer-buttons {
